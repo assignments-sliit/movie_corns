@@ -13,7 +13,7 @@ class _HomeScreenState extends State<HomeScreen>{
         title: new Text('Login'),
       ),
       body: new Center(
-        child: new Text('This is where the login form would be....'),
+        child: new Text('This is where the login form would be.... hello'),
       ),
     );
   }
