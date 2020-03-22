@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1084694568502",
+    "firebase_url": "https://movie-corns-flutter.firebaseio.com",
+    "project_id": "movie-corns-flutter",
+    "storage_bucket": "movie-corns-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1084694568502:android:61a7460b0f795938484297",
+        "android_client_info": {
+          "package_name": "com.example.movie_corns"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1084694568502-0jfl2lchf8k2qjhh9v4rggl0dfcka9nq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.movie_corns",
+            "certificate_hash": "d0ccdcbcb79310ce2505a7c8c8654a4e31deeea2"
+          }
+        },
+        {
+          "client_id": "1084694568502-kj4tfjj2njiqo46m7itgl4us8qjt2lcd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWdzIsKSDLqmVCZYYc7VKwQFTmYFiTnO0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1084694568502-kj4tfjj2njiqo46m7itgl4us8qjt2lcd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
