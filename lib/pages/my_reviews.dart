@@ -16,7 +16,7 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
     return Scaffold(
       body: Center(
         child: Container(
-          child: Text("MY REVIEWS"),
+          child: Text("MY RATINGS"),
         ),
       ),
     );

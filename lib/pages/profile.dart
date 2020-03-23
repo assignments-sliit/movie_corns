@@ -16,7 +16,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       body: Center(
         child: Container(
-          child: Text("My Profile"),
+          child: Text("MY PROFILE"),
         ),
       ),
     );

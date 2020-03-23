@@ -17,7 +17,7 @@ class _MoviePageState extends State<MoviePage> {
     return Scaffold(
       body: Center(
         child: Container(
-          child: Text("MY HOME"),
+          child: Text("HOME"),
         ),
       ),
     );
