@@ -115,9 +115,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                   password: pwdInputController.text)
                               .then((currentUser) => Firestore.instance
                                   .collection("users")
-                                  .document(currentUser.uid)
+                                  .document(currentUser.user.uid)
                                   .setData({
-                                    "uid": currentUser.uid,
+                                    "uid": currentUser.user.uid,
                                     "fname": firstNameInputController.text,
                                     "surname": lastNameInputController.text,
                                     "email": emailInputController.text,
@@ -131,7 +131,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                                           firstNameInputController
                                                                   .text +
                                                               "'s Tasks",
-                                                      uid: currentUser.uid,
+                                                      uid: currentUser.user.uid,
                                                     )),
                                             (_) => false),
                                         firstNameInputController.clear(),

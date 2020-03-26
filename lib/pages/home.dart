@@ -28,15 +28,15 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Home Page"),
-      ),
+      // appBar: AppBar(
+      //   title: Text("Movie Corns"),
+      // ),
       body: tabs[currentTabIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTapped,
         currentIndex: currentTabIndex,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("Home")),
+          BottomNavigationBarItem(icon: Icon(Icons.movie), title: Text("Movies")),
           BottomNavigationBarItem(
               icon: Icon(Icons.star), title: Text("My Reviews")),
           BottomNavigationBarItem(

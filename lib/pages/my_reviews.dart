@@ -14,6 +14,9 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       appBar: AppBar(
+        title: Text("My Ratings"),
+      ),
       body: Center(
         child: Container(
           child: Text("MY RATINGS"),
