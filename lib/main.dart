@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movie_corns/pages/add_review.dart';
 import 'package:movie_corns/pages/home.dart';
 import 'package:movie_corns/pages/login.dart';
-import 'package:movie_corns/pages/movie.dart';
+import 'package:movie_corns/pages/movies.dart';
 import 'package:movie_corns/pages/my_reviews.dart';
 import 'package:movie_corns/pages/profile.dart';
 import 'package:movie_corns/pages/register.dart';

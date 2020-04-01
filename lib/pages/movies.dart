@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:movie_corns/api/models/Movie.dart';
 import 'package:movie_corns/api/services/auth.dart';
 import 'package:movie_corns/pages/login.dart';
 
@@ -43,4 +45,21 @@ class _MoviePageState extends State<MoviePage> {
       ),
     );
   }
+
+  Widget _buildMovieList(BuildContext context, List<DocumentSnapshot> snapshot){
+    
+  }
+
+  Widget _buildMovieListTiles(BuildContext context,List<DocumentSnapshot> snapshot ){
+
+  }
+
+  Widget _buildMovieItem(BuildContext context,DocumentSnapshot data){
+
+  }
+
+  Widget _buildMovieCard(String imgPath,Movie movie){
+    
+  }
+
 }
