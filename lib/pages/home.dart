@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 //import 'package:cloud_firestore/cloud_firestore.dart';
 import 'profile.dart';
-import 'movie.dart';
+import 'movies.dart';
 import 'my_reviews.dart';
 
 class HomePage extends StatefulWidget {
