@@ -19,30 +19,7 @@ class _MoviePageState extends State<MoviePage> {
   final Auth auth = new Auth();
   @override
   Widget build(BuildContext context) {
-    Widget yesButton = FlatButton(
-      child: Text("YES"),
-      onPressed: () {
-        auth.signOut();
-        print('User signout Complete');
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
-      },
-    );
-    Widget cancelButton = FlatButton(
-      child: Text("CANCEL"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-    AlertDialog alertSignout = AlertDialog(
-      title: Text("Sign Out"),
-      content: Text("Are you sure want to sign out?"),
-      actions: [
-        cancelButton,
-        yesButton
-        
-      ],
-    );
+    //AlertDialog alertSignout =
     return Scaffold(
         appBar: AppBar(
           title: Text("All Movies"),
@@ -51,11 +28,34 @@ class _MoviePageState extends State<MoviePage> {
               icon: Icon(Icons.exit_to_app),
               onPressed: () {
                 showDialog(
-                  context: context,
-                  builder: (BuildContext context){
-                    return alertSignout;
-                  }
-                );
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("Sign Out"),
+                        content: Text("Are you sure want to sign out?"),
+                        actions: [
+                          FlatButton(
+                            child: Text("CANCEL"),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          FlatButton(
+                            child: Text("YES"),
+                            onPressed: () {
+                              auth.signOut();
+                              print('User signout Complete');
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  "/login",
+                                  (_)=>false
+                               );
+                            },
+                          ),
+                        ],
+                      );
+                      
+                    });
               },
             ),
           ],
@@ -65,7 +65,7 @@ class _MoviePageState extends State<MoviePage> {
 
   Widget _buildMovieBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('movies').snapshots(),
+      stream: Firestore.instance.collection('movies').orderBy("releaseYear",descending: true).snapshots(),
       builder: (context, AsyncSnapshot snapshot) {
         if (!snapshot.hasData) return CircularProgressIndicator();
 
