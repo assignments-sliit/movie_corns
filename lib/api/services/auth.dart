@@ -9,5 +9,9 @@ class Auth{
     return firebaseAuth.signOut();
   }
 
+  getCurrentUserUid()async{
+   FirebaseUser user = await firebaseAuth.currentUser();
+   return user.uid;
+  }
 
 }

@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_corns/api/models/Movie.dart';
 import 'package:movie_corns/api/services/auth.dart';
-import 'package:movie_corns/pages/login.dart';
+import 'package:movie_corns/pages/add_review.dart';
+//import 'package:movie_corns/pages/login.dart'; <-- later
 
 class MoviePage extends StatefulWidget {
   MoviePage({Key key, this.title, this.uid, this.movieId})
@@ -46,15 +48,11 @@ class _MoviePageState extends State<MoviePage> {
                               auth.signOut();
                               print('User signout Complete');
                               Navigator.pushNamedAndRemoveUntil(
-                                  context,
-                                  "/login",
-                                  (_)=>false
-                               );
+                                  context, "/login", (_) => false);
                             },
                           ),
                         ],
                       );
-                      
                     });
               },
             ),
@@ -65,7 +63,10 @@ class _MoviePageState extends State<MoviePage> {
 
   Widget _buildMovieBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('movies').orderBy("releaseYear",descending: true).snapshots(),
+      stream: Firestore.instance
+          .collection('movies')
+          .orderBy("releaseYear", descending: true)
+          .snapshots(),
       builder: (context, AsyncSnapshot snapshot) {
         if (!snapshot.hasData) return CircularProgressIndicator();
 
@@ -112,11 +113,20 @@ class _MoviePageState extends State<MoviePage> {
         width: MediaQuery.of(context).size.width,
         child: new GestureDetector(
           onTap: () {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return alert;
-                });
+            // showDialog(
+            //     context: context,
+            //     builder: (BuildContext context) {
+            //       return alert;
+            //     });
+
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddReviewPage(
+                          title: snapshot["movieTitle"],
+                          uid: auth.getCurrentUserUid().toString(),
+                          movieId: snapshot.documentID,
+                        )));
           },
           child: Card(
             shape: RoundedRectangleBorder(

@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
             color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600));
     return Scaffold(
         appBar: AppBar(
-          title: Text("Login"),
+          title: Text("Login to Movie Corns", textAlign: TextAlign.justify,),
         ),
         body: Container(
             padding: const EdgeInsets.all(20.0),

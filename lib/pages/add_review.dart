@@ -13,6 +13,6 @@ class _AddReviewPageState extends State<AddReviewPage> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return null;
+    return Text("Welcome to add review page");
   }
 }
