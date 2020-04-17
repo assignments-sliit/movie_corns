@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:movie_corns/api/services/auth.dart';
 import 'package:movie_corns/pages/home.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:toast/toast.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -16,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailInputController;
   TextEditingController pwdInputController;
   ProgressDialog pr;
+  Auth auth;
 
   @override
   initState() {
@@ -61,7 +64,10 @@ class _LoginPageState extends State<LoginPage> {
             color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600));
     return Scaffold(
         appBar: AppBar(
-          title: Text("Login to Movie Corns", textAlign: TextAlign.justify,),
+          title: Text(
+            "Login to Movie Corns",
+            textAlign: TextAlign.justify,
+          ),
         ),
         body: Container(
             padding: const EdgeInsets.all(20.0),
@@ -100,17 +106,27 @@ class _LoginPageState extends State<LoginPage> {
                                 .document(currentUser.user.uid)
                                 .get()
                                 .then((DocumentSnapshot result) => pr
-                                    .hide()
-                                    .then(
-                                        (isHidden) => Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => HomePage(
-                                                      title: 'All Movies',
-                                                      uid: currentUser.user.uid,
-                                                    )))))
+                                        .hide()
+                                        .then((isHidden) =>
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        HomePage(
+                                                          title: 'All Movies',
+                                                          uid: currentUser
+                                                              .user.uid,
+                                                        ))))
+                                        .whenComplete(() {
+                                      Toast.show('Welcome!', context,
+                                          duration: Toast.LENGTH_LONG,
+                                          gravity: Toast.CENTER);
+                                    }))
                                 .catchError((err) => print(err)))
-                            .catchError((err) => print(err));
+                            .catchError((err) {
+                          pr.hide();
+                          showAuthError(err.code, context);
+                        });
                       }
                     },
                   ),
@@ -118,11 +134,31 @@ class _LoginPageState extends State<LoginPage> {
                   FlatButton(
                     child: Text("Register here!"),
                     onPressed: () {
+                      Firestore.instance
+                          .collection("users")
+                          .document(auth.getCurrentUserUid())
+                          .get()
+                          .then((DocumentSnapshot result) => {});
+
                       Navigator.pushNamed(context, "/register");
                     },
                   )
                 ],
               ),
             ))));
+  }
+
+  void showAuthError(errorCode, BuildContext context) {
+    switch (errorCode) {
+      case "ERROR_WRONG_PASSWORD":
+        Toast.show('Incorrect Password', context,
+            duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
+        break;
+
+      default:
+        Toast.show('Unknown Authentication Error', context,
+            duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
+        break;
+    }
   }
 }

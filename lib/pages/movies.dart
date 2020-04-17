@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_corns/api/models/Movie.dart';
 import 'package:movie_corns/api/services/auth.dart';
@@ -87,9 +86,6 @@ class _MoviePageState extends State<MoviePage> {
         });
   }
 
-  // Widget _buildMovieListTiles(
-  //     BuildContext context, List<DocumentSnapshot> snapshot) {}
-
   Widget _buildMovieItem(BuildContext context, DocumentSnapshot snapshot) {
     Widget okButton = FlatButton(
       child: Text("Hukapan"),
@@ -113,12 +109,6 @@ class _MoviePageState extends State<MoviePage> {
         width: MediaQuery.of(context).size.width,
         child: new GestureDetector(
           onTap: () {
-            // showDialog(
-            //     context: context,
-            //     builder: (BuildContext context) {
-            //       return alert;
-            //     });
-
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -215,8 +205,6 @@ class _MoviePageState extends State<MoviePage> {
       ),
     );
   }
-
-  Widget _buildMovieCard(String imgPath, Movie movie) {}
 
   String getAverageRating(String movieId) {
     int averagereview;
