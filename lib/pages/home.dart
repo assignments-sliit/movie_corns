@@ -36,7 +36,8 @@ class _HomePageState extends State<HomePage> {
         onTap: onTapped,
         currentIndex: currentTabIndex,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.movie), title: Text("Movies")),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.movie), title: Text("Movies")),
           BottomNavigationBarItem(
               icon: Icon(Icons.star), title: Text("My Reviews")),
           BottomNavigationBarItem(
