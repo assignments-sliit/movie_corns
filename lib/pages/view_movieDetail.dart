@@ -1,28 +1,29 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:movie_corns/api/models/Movie.dart';
 import 'package:movie_corns/api/services/auth.dart';
-import 'package:movie_corns/pages/view_movieDetail.dart';
-//import 'package:movie_corns/pages/login.dart'; <-- later
 
-class MoviePage extends StatefulWidget {
-  MoviePage({Key key, this.title, this.uid, this.movieId})
+class ViewMovieDetailPage extends StatefulWidget {
+  ViewMovieDetailPage({Key key, this.title, this.uid, this.movieId})
       : super(key: key); //update this to include the uid in the constructor
   final String title;
   final String uid; //include this
   final String movieId;
 
   @override
-  _MoviePageState createState() => _MoviePageState();
+  _ViewMovieDetailPageState createState() => _ViewMovieDetailPageState();
 }
 
-class _MoviePageState extends State<MoviePage> {
+class _ViewMovieDetailPageState extends State<ViewMovieDetailPage> {
+  bool _visible = false;
   final Auth auth = new Auth();
+
+  //Top Navigation
   @override
   Widget build(BuildContext context) {
-    //AlertDialog alertSignout =
     return Scaffold(
         appBar: AppBar(
-          title: Text("All Movies"),
+          title: Text("Selected Movie"),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.exit_to_app),
@@ -87,36 +88,18 @@ class _MoviePageState extends State<MoviePage> {
 
   Widget _buildMovieItem(BuildContext context, DocumentSnapshot snapshot) {
     Widget okButton = FlatButton(
-      child: Text("TRY 123"),
+      child: Text("Test"),
       onPressed: () {
         Navigator.pop(context);
       },
     );
 
-    AlertDialog alert = AlertDialog(
-      title: Text("Selected Movie : ${snapshot["movieTitle"]}"),
-      content: Text(
-          "You selected ${snapshot["movieTitle"]} from ${snapshot["releaseYear"]}"),
-      actions: [
-        okButton,
-      ],
-    );
     return Padding(
       padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Container(
-        height: MediaQuery.of(context).size.height / 2.8,
+        height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: new GestureDetector(
-          onTap: () {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ViewMovieDetailPage(
-                          title: snapshot["movieTitle"],
-                          uid: auth.getCurrentUserUid().toString(),
-                          movieId: snapshot.documentID,
-                        )));
-          },
           child: Card(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0)),
@@ -139,65 +122,8 @@ class _MoviePageState extends State<MoviePage> {
                         ),
                       ),
                     ),
-                    Positioned(
-                      top: 6.0,
-                      right: 6.0,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4.0)),
-                        child: Padding(
-                          padding: EdgeInsets.all(2.0),
-                          child: Row(
-                            children: <Widget>[
-                              Icon(
-                                Icons.star,
-                                color: Colors.orange,
-                                size: 10,
-                              ),
-                              Text(
-                                getAverageRating(snapshot["movieId"]),
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 6.0,
-                      left: 6.0,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(3.0)),
-                        child: Padding(
-                          padding: EdgeInsets.all(4.0),
-                          child: Text(
-                            "${snapshot["releaseYear"]}",
-                            style: TextStyle(
-                                fontSize: 10,
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
-                SizedBox(height: 7.0),
-                Padding(
-                  padding: EdgeInsets.only(left: 15.0),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: Text(
-                      "${snapshot["movieTitle"]}",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10.0),
-                //start frm here
               ],
             ),
           ),
@@ -205,6 +131,8 @@ class _MoviePageState extends State<MoviePage> {
       ),
     );
   }
+
+  Widget _buildMovieCard(String imgPath, Movie movie) {}
 
   String getAverageRating(String movieId) {
     int averagereview;
