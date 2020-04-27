@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:movie_corns/api/models/Movie.dart';
 import 'package:movie_corns/api/services/auth.dart';
+//import 'package:movie_corns/pages/movies.dart';
 
 class ViewMovieDetailPage extends StatefulWidget {
   ViewMovieDetailPage({Key key, this.title, this.uid, this.movieId})
@@ -124,6 +125,166 @@ class _ViewMovieDetailPageState extends State<ViewMovieDetailPage> {
                     ),
                   ],
                 ),
+                Column(
+                  children: <Widget>[
+                    /*start movie title display*/
+                    SizedBox(height: 7.0),
+                    Padding(
+                      padding:
+                          EdgeInsets.only(left: 15.0, right: 15.0, top: 15.0),
+                      child: new Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          new Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              new Text(
+                                'Movie Name',
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 5.0),
+                    Padding(
+                      padding: EdgeInsets.only(left: 15.0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Text(
+                          "${snapshot["movieTitle"]}",
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ),
+                    /*end movie title display*/
+                    /*start release year display*/
+                    SizedBox(height: 5.0),
+                    Padding(
+                      padding:
+                          EdgeInsets.only(left: 15.0, right: 15.0, top: 15.0),
+                      child: new Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          new Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              new Text(
+                                'Release Year',
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 5.0),
+                    Padding(
+                      padding: EdgeInsets.only(left: 15.0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Text(
+                          "${snapshot["releaseYear"]}",
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ),
+                    /*end release year display*/
+                    /*start director display*/
+                    SizedBox(height: 5.0),
+                    Padding(
+                      padding:
+                          EdgeInsets.only(left: 15.0, right: 15.0, top: 15.0),
+                      child: new Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          new Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              new Text(
+                                'Director',
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 7.0),
+                    Padding(
+                      padding: EdgeInsets.only(left: 15.0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Text(
+                          "${snapshot["director"]}",
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ),
+                    /*end director display*/
+                    /*start movie description display*/
+                    SizedBox(height: 5.0),
+                    Padding(
+                      padding:
+                          EdgeInsets.only(left: 15.0, right: 15.0, top: 15.0),
+                      child: new Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          new Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              new Text(
+                                'Description',
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 7.0),
+                    Padding(
+                      padding: EdgeInsets.only(left: 15.0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Text(
+                          "${snapshot["description"]}",
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ),
+                    /*end movie description display*/
+                    Column(
+                      children: <Widget>[
+                        new SingleChildScrollView(
+                            //Review List
+                            )
+                      ],
+                    ),
+                    SizedBox(height: 10.0),
+                  ],
+                )
               ],
             ),
           ),
