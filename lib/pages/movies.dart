@@ -85,22 +85,7 @@ class _MoviePageState extends State<MoviePage> {
         });
   }
 
-  Widget _buildMovieItem(BuildContext context, DocumentSnapshot snapshot) {
-    Widget okButton = FlatButton(
-      child: Text("TRY 123"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    AlertDialog alert = AlertDialog(
-      title: Text("Selected Movie : ${snapshot["movieTitle"]}"),
-      content: Text(
-          "You selected ${snapshot["movieTitle"]} from ${snapshot["releaseYear"]}"),
-      actions: [
-        okButton,
-      ],
-    );
+  Widget _buildMovieItem(BuildContext context, DocumentSnapshot snapshot) {  
     return Padding(
       padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Container(
@@ -112,7 +97,6 @@ class _MoviePageState extends State<MoviePage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => ViewMovieDetailPage(
-                          title: snapshot["movieTitle"],
                           uid: auth.getCurrentUserUid().toString(),
                           movieId: snapshot.documentID,
                         )));
