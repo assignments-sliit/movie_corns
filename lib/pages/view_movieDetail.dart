@@ -1,8 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:movie_corns/api/services/auth.dart';
-
 import 'package:flutter/cupertino.dart';
+import 'package:movie_corns/pages/add_review.dart';
 
 class ViewMovieDetailPage extends StatelessWidget {
   final movieId;
@@ -167,7 +168,15 @@ class ViewMovieDetailPage extends StatelessWidget {
           icon: Icon(Icons.add, color: Colors.white),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(19)),
-          onPressed: () => {},
+          onPressed: () => {
+            //Amashi start
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => AddReviewPage(
+                      uid: uid,
+                      movieId: snapshot.documentID,
+                    )))
+            //Amashi end
+          },
           color: Colors.blue,
           label: Text("ADD REVIEW", style: TextStyle(color: Colors.white)),
         ));
