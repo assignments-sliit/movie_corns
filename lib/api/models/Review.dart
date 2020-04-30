@@ -4,10 +4,8 @@ class Review {
   String movieId;
   String reviewId;
   String uid;
-  String content;
+  String review;
   num rating;
-  Timestamp dateTime;
-  String date;
 
   final DocumentReference documentReference;
 
@@ -15,16 +13,14 @@ class Review {
       : assert(map['movieId'] != null),
         assert(map['reviewId'] != null),
         assert(map['uid'] != null),
-        assert(map['content'] != null),
+        assert(map['review'] != null),
         assert(map['rating'] != null),
         movieId = map['movieId'],
         reviewId = map['reviewId'],
         uid = map['uid'],
-        content = map['content'],
-        rating = map['rating'],
-        dateTime = map['date'];
-  Review.fromSnapshot( DocumentSnapshot snapshot ) : this.fromMap(snapshot.data, documentReference: snapshot.reference);
+        review = map['review'],
+        rating = map['rating'];
 
+  Review.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.data, documentReference: snapshot.reference);
 }
-
-

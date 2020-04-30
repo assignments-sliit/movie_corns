@@ -1,126 +1,206 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:movie_corns/api/models/Movie.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+//import 'package:movie_corns/api/models/Movie.dart';
 import 'package:movie_corns/api/services/auth.dart';
+//import 'package:movie_corns/api/models/Review.dart';
 
 class AddReviewPage extends StatefulWidget {
-  AddReviewPage({Key key, this.title, this.uid, this.movieId})
-      : super(key: key); //update this to include the uid in the constructor
-  final String title;
-  final String uid; //include this
-  final String movieId;
+  final movieId;
+  final uid;
+
+  AddReviewPage({Key key, this.movieId, this.uid}) : super(key: key);
 
   @override
-  _AddReviewPageState createState() => _AddReviewPageState();
+  ReviewFormBodyState createState() => new ReviewFormBodyState();
 }
 
-class _AddReviewPageState extends State<AddReviewPage> {
-  bool _visible = false;
-  final Auth auth = new Auth();
+class ReviewFormBodyState extends State<AddReviewPage> {
+  final _formKey = GlobalKey<FormState>();
+  final reference = Firestore.instance.collection('reviews').reference();
+  double rating = 0.0;
+  String review = "";
+  DateTime ratingDate = DateTime.now();
 
-  //Top Navigation
+  Function toast(
+      String msg, Toast toast, ToastGravity toastGravity, Color colors) {
+    Fluttertoast.showToast(
+        msg: msg,
+        toastLength: toast,
+        gravity: toastGravity,
+        timeInSecForIosWeb: 1,
+        backgroundColor: colors,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("Selected Movie"),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.exit_to_app),
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text("Sign Out"),
-                        content: Text("Are you sure want to sign out?"),
-                        actions: [
-                          FlatButton(
-                            child: Text("CANCEL"),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                          FlatButton(
-                            child: Text("YES"),
-                            onPressed: () {
-                              auth.signOut();
-                              print('User signout Complete');
-                              Navigator.pushNamedAndRemoveUntil(
-                                  context, "/login", (_) => false);
-                            },
-                          ),
-                        ],
-                      );
-                    });
-              },
-            ),
+    const edgeInsetValue = 8.0;
+    final Auth auth = new Auth();
+
+    print("Movie id:");
+    print(widget.movieId.toString());
+
+    print("User id:");
+    print(widget.uid);
+
+    return Container(
+        child: Scaffold(
+      appBar: AppBar(
+        title: Text("Add Review"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("Sign Out"),
+                      content: Text("Are you sure want to sign out?"),
+                      actions: [
+                        FlatButton(
+                          child: Text("CANCEL"),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        FlatButton(
+                          child: Text("YES"),
+                          onPressed: () {
+                            auth.signOut();
+                            print('User signout Complete');
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, "/login", (_) => false);
+                          },
+                        ),
+                      ],
+                    );
+                  });
+            },
+          ),
+        ],
+      ),
+      body: Container(
+        padding: const EdgeInsets.fromLTRB(
+            edgeInsetValue, 50.0, edgeInsetValue, edgeInsetValue),
+        child: ListView(
+          children: <Widget>[
+            Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(3.0),
+                    child: Text(
+                      "Comment",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          fontSize: 20),
+                    ),
+                  ),
+                  TextFormField(
+                    maxLines: 4,
+                    validator: (comment) {
+                      setState(() {
+                        this.review = comment;
+                      });
+                      if (comment.isEmpty) {
+                        return 'Comment field cannot be empty';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.fromLTRB(10.0, 35.0, 10.0, 5.0),
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: "We like to hear from you!!",
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0))),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(12.0),
+                    child: Text(
+                      "Rate Us",
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          fontSize: 20),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(12.0),
+                    child: SmoothStarRating(
+                      allowHalfRating: true,
+                      onRatingChanged: (rateVal) {
+                        setState(() {
+                          rating = rateVal;
+                          print('The rating is $rating');
+                        });
+                      },
+                      starCount: 5,
+                      rating: this.rating,
+                      size: 40,
+                      filledIconData: Icons.star,
+                      halfFilledIconData: Icons.star_half,
+                      color: Colors.blueAccent,
+                      borderColor: Colors.blue,
+                      spacing: 0.0,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(156.0, 20.0, 30.0, 5.0),
+                    child: RaisedButton(
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          addReviewFirebase(
+                              review, rating, widget.movieId, widget.uid);
+                        }
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, "/home", (_) => false);
+
+                        toast(
+                            "Your review added successfully!!",
+                            Toast.LENGTH_LONG,
+                            ToastGravity.BOTTOM,
+                            Colors.blueGrey);
+                      },
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(19)),
+                      color: Colors.blue,
+                      child: Text(
+                        'SUBMIT',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
-        body: _buildMovieBody(context));
+      ),
+    ));
   }
 
-  Widget _buildMovieBody(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance
-          .collection('movies')
-          .orderBy("releaseYear", descending: true)
-          .snapshots(),
-      builder: (context, AsyncSnapshot snapshot) {
-        if (!snapshot.hasData) return CircularProgressIndicator();
+  void addReviewFirebase(
+      String review, double rating, String movieId, String uid) {
+    Map<String, dynamic> data = Map();
+    data['review'] = review;
+    data['rating'] = rating;
+    data['movieId'] = movieId;
+    data['uid'] = uid;
 
-        return _buildMovieList(context, snapshot.data.documents);
-      },
-    );
-  }
-
-  Widget _buildMovieList(
-      BuildContext context, List<DocumentSnapshot> snapshot) {
-    return ListView.builder(
-        primary: false,
-        physics: ScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: snapshot.isEmpty ? 0 : snapshot.length,
-        itemBuilder: (context, index) {
-          return _buildMovieItem(context, snapshot[index]);
-        });
-  }
-
-  Widget _buildMovieItem(BuildContext context, DocumentSnapshot snapshot) {
-    Widget okButton = FlatButton(
-      child: Text("Test"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    /* AlertDialog alert = AlertDialog(
-      title: Text("Selected Movie : ${snapshot["movieTitle"]}"),
-      content: Text(
-          "You selected ${snapshot["movieTitle"]} from ${snapshot["releaseYear"]}"),
-      actions: [
-        okButton,
-      ],
-    );*/
-    return Scaffold();
-  }
-
-  Widget _buildMovieCard(String imgPath, Movie movie) {}
-
-  String getAverageRating(String movieId) {
-    int averagereview;
-    int noOfDocs;
-    Firestore.instance
-        .collection('reviews')
-        .where("movieId", isEqualTo: movieId)
-        .getDocuments()
-        .then((snap) => snap.documents.forEach((doc) => {
-              averagereview = averagereview + doc.data["rating"],
-              noOfDocs = noOfDocs + snap.documents.length
-            }));
-    // if(noOfDocs >= 0)
-    //   return (averagereview/noOfDocs).toString();
-
-    return "5.0";
+    reference.add(data);
   }
 }
