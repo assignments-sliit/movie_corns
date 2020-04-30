@@ -14,54 +14,51 @@ class ViewMovieDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
-      onWillPop:()async=> false ,
-     child: Scaffold(
-       
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Text("Movie Details"),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                context, '/movie', (_) => false),
-          ),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.exit_to_app),
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text("Sign Out"),
-                        content: Text("Are you sure want to sign out?"),
-                        actions: [
-                          FlatButton(
-                            child: Text("CANCEL"),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                          FlatButton(
-                            child: Text("YES"),
-                            onPressed: () {
-                              auth.signOut();
-                              print('User signout Complete');
-                              Navigator.pushNamedAndRemoveUntil(
-                                  context, "/login", (_) => false);
-                            },
-                          ),
-                        ],
-                      );
-                    });
-              },
+        onWillPop: () async => false,
+        child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              title: Text("Movie Details"),
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                    context, '/movie', (_) => false),
+              ),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.exit_to_app),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Sign Out"),
+                            content: Text("Are you sure want to sign out?"),
+                            actions: [
+                              FlatButton(
+                                child: Text("CANCEL"),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              FlatButton(
+                                child: Text("YES"),
+                                onPressed: () {
+                                  auth.signOut();
+                                  print('User signout Complete');
+                                  Navigator.pushNamedAndRemoveUntil(
+                                      context, "/login", (_) => false);
+                                },
+                              ),
+                            ],
+                          );
+                        });
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
-        body: _prepareDetailAndBody(context, movieId))
-    );
+            body: _prepareDetailAndBody(context, movieId)));
   }
-    
 
   Widget _prepareDetailAndBody(BuildContext context, String movieId) {
     return StreamBuilder<DocumentSnapshot>(
@@ -76,8 +73,7 @@ class ViewMovieDetailPage extends StatelessWidget {
   }
 
   Widget _movieDetailBody(BuildContext context, DocumentSnapshot snapshot) {
-    print(movieId);
-    print(snapshot["movieImageUrl"]);
+    print(uid);
     final rating = Container(
       padding: const EdgeInsets.all(7.0),
       decoration: new BoxDecoration(
@@ -177,9 +173,7 @@ class ViewMovieDetailPage extends StatelessWidget {
         ));
 
     final bottomContent = Container(
-      // height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      // color: Theme.of(context).primaryColor,
       padding: EdgeInsets.all(40.0),
       child: Center(
         child: Column(
@@ -202,5 +196,4 @@ class ViewMovieDetailPage extends StatelessWidget {
 
     return snapUrl;
   }
-
 }

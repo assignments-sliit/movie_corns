@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:movie_corns/api/services/auth.dart';
 import 'package:movie_corns/pages/home.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
 class LoginPage extends StatefulWidget {
@@ -105,19 +106,16 @@ class _LoginPageState extends State<LoginPage> {
                                 .collection("users")
                                 .document(currentUser.user.uid)
                                 .get()
-                                .then((DocumentSnapshot result) => pr
-                                        .hide()
-                                        .then((isHidden) =>
-                                            Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        HomePage(
-                                                          title: 'All Movies',
-                                                          uid: currentUser
-                                                              .user.uid,
-                                                        ))))
-                                        .whenComplete(() {
+                                .then((DocumentSnapshot result) =>
+                                    pr.hide().then((isHidden) {
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => HomePage(
+                                                    title: 'All Movies',
+                                                    uid: currentUser.user.uid,
+                                                  )));
+                                    }).whenComplete(() {
                                       Toast.show('Welcome!', context,
                                           duration: Toast.LENGTH_LONG,
                                           gravity: Toast.CENTER);

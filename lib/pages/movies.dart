@@ -10,16 +10,31 @@ class MoviePage extends StatefulWidget {
   final String title;
   final String uid; //include this
   final String movieId;
+  final Auth auth = new Auth();
 
   @override
   _MoviePageState createState() => _MoviePageState();
 }
 
 class _MoviePageState extends State<MoviePage> {
-  final Auth auth = new Auth();
+  String userId = "";
+
+  @override
+  void initState() {
+    super.initState();
+    widget.auth.getCurrentUser().then((user) {
+      setState(() {
+        if (user != null) {
+          userId = user?.uid;
+
+          print(userId);
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    //AlertDialog alertSignout =
     return Scaffold(
         appBar: AppBar(
           title: Text("All Movies"),
@@ -43,7 +58,7 @@ class _MoviePageState extends State<MoviePage> {
                           FlatButton(
                             child: Text("YES"),
                             onPressed: () {
-                              auth.signOut();
+                              widget.auth.signOut();
                               print('User signout Complete');
                               Navigator.pushNamedAndRemoveUntil(
                                   context, "/login", (_) => false);
@@ -85,7 +100,7 @@ class _MoviePageState extends State<MoviePage> {
         });
   }
 
-  Widget _buildMovieItem(BuildContext context, DocumentSnapshot snapshot) {  
+  Widget _buildMovieItem(BuildContext context, DocumentSnapshot snapshot) {
     return Padding(
       padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Container(
@@ -97,7 +112,7 @@ class _MoviePageState extends State<MoviePage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => ViewMovieDetailPage(
-                          uid: auth.getCurrentUserUid().toString(),
+                          uid: userId,
                           movieId: snapshot.documentID,
                         )));
           },
