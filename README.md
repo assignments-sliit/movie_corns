@@ -1,4 +1,4 @@
-# movie_corns
+# Movie Corns
 
 A new Flutter project.
 
