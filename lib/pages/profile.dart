@@ -15,65 +15,63 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
-  bool _status = true;
   final FocusNode myFocusNode = FocusNode();
-  String userId="";
+  String userId = "";
   @override
   void initState() {
     super.initState();
     widget.auth.getCurrentUser().then((user) {
       setState(() {
         if (user != null) {
-          userId = user?.uid; 
-         }
+          userId = user?.uid;
+        }
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    
-
     return Scaffold(
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              title: Text("Your Profile"),
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.exit_to_app),
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Sign Out"),
-                            content: Text("Are you sure want to sign out?"),
-                            actions: [
-                              FlatButton(
-                                child: Text("CANCEL"),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              FlatButton(
-                                child: Text("YES"),
-                                onPressed: () {
-                                  widget.auth.signOut();
-                                  print('User signout Complete');
-                                  Navigator.pushNamedAndRemoveUntil(
-                                      context, "/login", (_) => false);
-                                },
-                              ),
-                            ],
-                          );
-                        });
-                  },
-                ),
-              ],
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text("Your Profile"),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("Sign Out"),
+                        content: Text("Are you sure want to sign out?"),
+                        actions: [
+                          FlatButton(
+                            child: Text("CANCEL"),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          FlatButton(
+                            child: Text("YES"),
+                            onPressed: () {
+                              widget.auth.signOut();
+                              print('User signout Complete');
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, "/login", (_) => false);
+                            },
+                          ),
+                        ],
+                      );
+                    });
+              },
             ),
-            body: _prepareDetailAndBody(context, userId));
+          ],
+        ),
+        body: _prepareDetailAndBody(context, userId));
   }
- Widget _prepareDetailAndBody(BuildContext context, String userId) {
+
+  Widget _prepareDetailAndBody(BuildContext context, String userId) {
     return StreamBuilder<DocumentSnapshot>(
       stream:
           Firestore.instance.collection('users').document(userId).snapshots(),
@@ -92,9 +90,12 @@ class _ProfilePageState extends State<ProfilePage>
       decoration: new BoxDecoration(
           border: new Border.all(color: Colors.white),
           borderRadius: BorderRadius.circular(5.0)),
-      child: Text(snapshot["email"], style: TextStyle(color: Colors.white),),
+      child: Text(
+        snapshot["email"],
+        style: TextStyle(color: Colors.white),
+      ),
     );
-    
+
     final header = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -124,7 +125,6 @@ class _ProfilePageState extends State<ProfilePage>
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[Expanded(child: rating)],
         ),
-     
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
         )
@@ -138,8 +138,8 @@ class _ProfilePageState extends State<ProfilePage>
             height: MediaQuery.of(context).size.height * 0.5,
             decoration: new BoxDecoration(
               image: new DecorationImage(
-                  image:
-                      new NetworkImage("https://images.squarespace-cdn.com/content/v1/5b2c320e96e76f7d01013067/1530825643239-9KF07AF9QGKARM6XQKY4/ke17ZwdGBToddI8pDm48kOQScsc5TY8jCuObUFgfhqRZw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZUJFbgE-7XRK3dMEBRBhUpydfvc957wEB9Bk1XYZkNiy-OPlMj7dW9OZ3-IR2fYHYSbnS5Sr8t-axcDC25WJZaM/Man-Gentleman-Silhouette-Gray-Free-Illustrations-F-0424.jpg"),
+                  image: new NetworkImage(
+                      "https://images.squarespace-cdn.com/content/v1/5b2c320e96e76f7d01013067/1530825643239-9KF07AF9QGKARM6XQKY4/ke17ZwdGBToddI8pDm48kOQScsc5TY8jCuObUFgfhqRZw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZUJFbgE-7XRK3dMEBRBhUpydfvc957wEB9Bk1XYZkNiy-OPlMj7dW9OZ3-IR2fYHYSbnS5Sr8t-axcDC25WJZaM/Man-Gentleman-Silhouette-Gray-Free-Illustrations-F-0424.jpg"),
                   fit: BoxFit.cover),
             )),
         Container(
@@ -195,82 +195,10 @@ class _ProfilePageState extends State<ProfilePage>
 
     return snapUrl;
   }
+
   @override
   void dispose() {
     myFocusNode.dispose();
     super.dispose();
-  }
-
-  Widget _getActionButtons() {
-    return Padding(
-      padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 45.0),
-      child: new Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: 10.0),
-              child: Container(
-                child: new RaisedButton(
-                  child: new Text("Save"),
-                  textColor: Colors.white,
-                  color: Colors.green,
-                  onPressed: () {
-                    setState(() {
-                      _status = true;
-                      FocusScope.of(context).requestFocus(new FocusNode());
-                    });
-                  },
-                  shape: new RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(20.0)),
-                ),
-              ),
-            ),
-            flex: 2,
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: 10.0),
-              child: Container(
-                child: new RaisedButton(
-                  child: new Text("Cancel"),
-                  textColor: Colors.white,
-                  color: Colors.red,
-                  onPressed: () {
-                    setState(() {
-                      _status = true;
-                      FocusScope.of(context).requestFocus(new FocusNode());
-                    });
-                  },
-                  shape: new RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(20.0)),
-                ),
-              ),
-            ),
-            flex: 2,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _getEditIcon() {
-    return new GestureDetector(
-      child: new CircleAvatar(
-        backgroundColor: Colors.red,
-        radius: 14.0,
-        child: new Icon(
-          Icons.edit,
-          color: Colors.white,
-          size: 16.0,
-        ),
-      ),
-      onTap: () {
-        setState(() {
-          _status = false;
-        });
-      },
-    );
   }
 }

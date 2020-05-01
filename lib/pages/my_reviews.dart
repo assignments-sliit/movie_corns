@@ -7,7 +7,7 @@ import 'package:movie_corns/api/services/auth.dart';
 
 class MyReviewsPage extends StatefulWidget {
   final String title;
-  final uid;
+  final dynamic uid;
   final movieId; //include this
   final reviewId;
 
@@ -87,10 +87,10 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
 
   Widget _buildReviewBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('reviews').snapshots(),
+      stream: Firestore.instance.collection('reviews').where('uid',isEqualTo: widget.uid).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return CircularProgressIndicator();
+          return Text('You have no reviews!');
         }
 
         return _buildReviewList(context, snapshot.data.documents);
@@ -104,25 +104,6 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
       padding: const EdgeInsets.only(top: 20.0),
       children: <Widget>[
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'REVIEWS',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontSize: 25),
-              ),
-            )
-          ],
-        ),
-        SizedBox(
-          height: 10.0,
-        ),
-        Row(
           children: <Widget>[
             Padding(
               padding: EdgeInsets.all(5.0),
@@ -131,6 +112,15 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
             Padding(
               padding: EdgeInsets.all(5.0),
               child: Text('${snapshot.length} reviews'),
+            )
+          ],
+        ),
+        Row(
+          children: <Widget>[
+            SizedBox(height: 30.0,),
+            Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Text('All your reviews'),
             )
           ],
         ),
@@ -153,7 +143,7 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
 
   Widget _buildReviewCard(String path, Record record) {
     return Padding(
-        padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+        padding: EdgeInsets.only(),
         child: Container(
             //height: MediaQuery.of(context).size.height / 2.8,
             width: MediaQuery.of(context).size.width,
@@ -161,8 +151,7 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
                 child: new Card(
               child: ListTile(
                 leading: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      'https://upload.wikimedia.org/wikipedia/commons/b/b7/Google_Contacts_logo.png'),
+                  child: Icon(Icons.rate_review),
                 ),
                 title: Row(
                   children: <Widget>[
@@ -213,7 +202,7 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
       allowHalfRating: true,
       starCount: 5,
       rating: _calAvgReview(snapshot),
-      size: 20.0,
+      size: 40.0,
       filledIconData: Icons.star,
       halfFilledIconData: Icons.star_half,
       color: Colors.blueAccent,

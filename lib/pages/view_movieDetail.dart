@@ -1,9 +1,12 @@
+import 'dart:ui';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:movie_corns/api/services/auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:movie_corns/pages/add_review.dart';
+import 'package:movie_corns/pages/home.dart';
 
 class ViewMovieDetailPage extends StatelessWidget {
   final movieId;
@@ -22,8 +25,15 @@ class ViewMovieDetailPage extends StatelessWidget {
               title: Text("Movie Details"),
               leading: IconButton(
                 icon: Icon(Icons.arrow_back),
-                onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                    context, '/movie', (_) => false),
+                onPressed: () {
+                  Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => HomePage(
+                                                    title: 'All Movies',
+                                                    uid: uid,
+                                                  )));
+                }
               ),
               actions: <Widget>[
                 IconButton(
@@ -181,12 +191,26 @@ class ViewMovieDetailPage extends StatelessWidget {
           label: Text("ADD REVIEW", style: TextStyle(color: Colors.white)),
         ));
 
+    final addReviewButtonFloating =  FloatingActionButton.extended( label: Text('ADD REVIEW'),
+      icon: Icon(Icons.rate_review),
+      backgroundColor: Theme.of(context).primaryColor,
+      onPressed: () {
+          //Amashi start
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => AddReviewPage(
+                    uid: uid,
+                    movieId: snapshot.documentID,
+                  )));
+          //Amashi end
+        },
+        );
+
     final bottomContent = Container(
       width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.all(40.0),
       child: Center(
         child: Column(
-          children: <Widget>[movieDetail, addReviewButton],
+          children: <Widget>[movieDetail],
         ),
       ),
     );
@@ -196,6 +220,7 @@ class ViewMovieDetailPage extends StatelessWidget {
       body: Column(
         children: <Widget>[headerContent, bottomContent],
       ),
+      floatingActionButton: addReviewButtonFloating,
     );
   }
 

@@ -91,8 +91,20 @@ class _LoginPageState extends State<LoginPage> {
                     obscureText: true,
                     validator: pwdValidator,
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
                   RaisedButton(
-                    child: Text("Start Reviewing"),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(19)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment
+                          .center, // Replace with a Row for horizontal icon + text
+                      children: <Widget>[
+                        Text("START REVIEWING   "),
+                        Icon(Icons.arrow_forward),
+                      ],
+                    ),
                     color: Theme.of(context).primaryColor,
                     textColor: Colors.white,
                     onPressed: () async {
@@ -128,16 +140,18 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
                   ),
-                  Text("Don't have an account yet?"),
-                  FlatButton(
-                    child: Text("Register here!"),
+                  SizedBox(
+                    height: 300,
+                  ),
+                  Text("New Here?"),
+                  RaisedButton(
+                    textColor: Theme.of(context).primaryColor,
+                    
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(19)),
+                    child: Text("JOIN MOVIE CORNS"),
                     onPressed: () {
-                      Firestore.instance
-                          .collection("users")
-                          .document(auth.getCurrentUserUid())
-                          .get()
-                          .then((DocumentSnapshot result) => {});
-
                       Navigator.pushNamed(context, "/register");
                     },
                   )

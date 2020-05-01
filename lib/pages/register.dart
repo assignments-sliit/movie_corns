@@ -82,7 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       }),
                   TextFormField(
                     decoration: InputDecoration(
-                        labelText: 'Email*', hintText: "john.doe@gmail.com"),
+                        labelText: 'Email*', hintText: "jothipala@gmail.com"),
                     controller: emailInputController,
                     keyboardType: TextInputType.emailAddress,
                     validator: emailValidator,
@@ -101,8 +101,18 @@ class _RegisterPageState extends State<RegisterPage> {
                     obscureText: true,
                     validator: pwdValidator,
                   ),
+                  SizedBox(height: 20,),
                   RaisedButton(
-                    child: Text("Register"),
+                 shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(19)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment
+                          .center, // Replace with a Row for horizontal icon + text
+                      children: <Widget>[
+                        Text("JOIN MOVIE CORNS  "),
+                        Icon(Icons.arrow_forward),
+                      ],
+                    ),
                     color: Theme.of(context).primaryColor,
                     textColor: Colors.white,
                     onPressed: () {
@@ -163,9 +173,15 @@ class _RegisterPageState extends State<RegisterPage> {
                       }
                     },
                   ),
+                  SizedBox(height: 130,),
                   Text("Already have an account?"),
-                  FlatButton(
-                    child: Text("Login here!"),
+                  RaisedButton(
+                    textColor: Theme.of(context).primaryColor,
+                    
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(19)),
+                    child: Text("LOGIN"),
                     onPressed: () {
                       Navigator.pop(context);
                     },
