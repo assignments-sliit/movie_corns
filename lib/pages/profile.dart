@@ -99,27 +99,12 @@ class _ProfilePageState extends State<ProfilePage>
     final header = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Icon(
-          Icons.account_circle,
-          color: Colors.white,
-          size: 30.0,
-        ),
-        Container(
-          width: 90.0,
-          child: new Divider(
-            color: Colors.blue,
-          ),
-        ),
         SizedBox(height: 10.0),
         Text(
-          snapshot["fname"],
+          snapshot["fname"] + " " + snapshot["surname"],
           style: TextStyle(color: Colors.white, fontSize: 30.0),
         ),
         SizedBox(height: 20.0),
-        Text(
-          snapshot["surname"],
-          style: TextStyle(color: Colors.white, fontSize: 30.0),
-        ),
         SizedBox(height: 30.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -143,7 +128,7 @@ class _ProfilePageState extends State<ProfilePage>
                   fit: BoxFit.cover),
             )),
         Container(
-          height: MediaQuery.of(context).size.height * 0.512,
+          height: MediaQuery.of(context).size.height * 0.5,
           padding: EdgeInsets.all(40.0),
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(color: Color.fromRGBO(54, 60, 100, .9)),
@@ -154,29 +139,36 @@ class _ProfilePageState extends State<ProfilePage>
       ],
     );
 
-    final movieDetail = Text(
-      "Please press the below button if you want to delete your account",
-      style: TextStyle(fontSize: 15.5),
-    );
+    final editProfileButton = Container(
+        padding: EdgeInsets.symmetric(vertical: 16.0),
+        width: MediaQuery.of(context).size.width,
+        child: RaisedButton.icon(
+          icon: Icon(Icons.edit, color: Colors.white),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(19)),
+          onPressed: () => {_displayDialog(context, snapshot)},
+          color: Theme.of(context).primaryColor,
+          label: Text("EDIT PROFILE", style: TextStyle(color: Colors.white)),
+        ));
 
-    final addReviewButton = Container(
+    final deleteAccountButton = Container(
         padding: EdgeInsets.symmetric(vertical: 16.0),
         width: MediaQuery.of(context).size.width,
         child: RaisedButton.icon(
           icon: Icon(Icons.delete, color: Colors.white),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(19)),
-          onPressed: () => {print('Delete account')},
+          onPressed: () => {},
           color: Colors.red,
-          label: Text("DELETE ACCOUNT", style: TextStyle(color: Colors.white)),
+          label: Text("DELETE PROFILE", style: TextStyle(color: Colors.white)),
         ));
 
     final bottomContent = Container(
       width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.all(40.0),
+      padding: EdgeInsets.all(10.0),
       child: Center(
         child: Column(
-          children: <Widget>[movieDetail, addReviewButton],
+          children: <Widget>[editProfileButton, deleteAccountButton],
         ),
       ),
     );
@@ -200,5 +192,69 @@ class _ProfilePageState extends State<ProfilePage>
   void dispose() {
     myFocusNode.dispose();
     super.dispose();
+  }
+
+  _displayDialog(BuildContext context, DocumentSnapshot snapshot) async {
+    TextEditingController fnameController;
+    TextEditingController surnameConroller;
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Edit Profile'),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)), //this right here
+            content: Container(
+              height: 100,
+              child: Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      controller: fnameController,
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: snapshot["fname"]),
+                    ),
+                    TextFormField(
+                      controller: surnameConroller,
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: snapshot["surname"]),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('CANCEL'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                onPressed: () {
+                  String fname =fnameController.text;
+                  String surname = surnameConroller.text;
+
+                 
+
+                  Firestore.instance
+                      .collection('users')
+                      .document(userId)
+                      .setData({
+                    "fname":
+                        fname ?? snapshot["fname"],
+                    "surname":
+                       surname ?? snapshot["surname"]
+                  });
+                },
+                child: Text("UPDATE"),
+              ),
+            ],
+          );
+        });
   }
 }

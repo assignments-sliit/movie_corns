@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:movie_corns/api/services/auth.dart';
@@ -171,25 +170,25 @@ class ViewMovieDetailPage extends StatelessWidget {
       style: TextStyle(fontSize: 15.5),
     );
 
-    final addReviewButton = Container(
-        padding: EdgeInsets.symmetric(vertical: 16.0),
-        width: MediaQuery.of(context).size.width,
-        child: RaisedButton.icon(
-          icon: Icon(Icons.add, color: Colors.white),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(19)),
-          onPressed: () => {
-            //Amashi start
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => AddReviewPage(
-                      uid: uid,
-                      movieId: snapshot.documentID,
-                    )))
-            //Amashi end
-          },
-          color: Colors.blue,
-          label: Text("ADD REVIEW", style: TextStyle(color: Colors.white)),
-        ));
+    // final addReviewButton = Container(
+    //     padding: EdgeInsets.symmetric(vertical: 16.0),
+    //     width: MediaQuery.of(context).size.width,
+    //     child: RaisedButton.icon(
+    //       icon: Icon(Icons.add, color: Colors.white),
+    //       shape:
+    //           RoundedRectangleBorder(borderRadius: BorderRadius.circular(19)),
+    //       onPressed: () => {
+    //         //Amashi start
+    //         Navigator.of(context).push(MaterialPageRoute(
+    //             builder: (context) => AddReviewPage(
+    //                   uid: uid,
+    //                   movieId: snapshot.documentID,
+    //                 )))
+    //         //Amashi end
+    //       },
+    //       color: Colors.blue,
+    //       label: Text("ADD REVIEW", style: TextStyle(color: Colors.white)),
+    //     ));
 
     final addReviewButtonFloating =  FloatingActionButton.extended( label: Text('ADD REVIEW'),
       icon: Icon(Icons.rate_review),

@@ -43,7 +43,20 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[fullStar, fullStar, fullStar, halfStar, starBorder],
   );
+String uid = "";
 
+ @override
+  void initState() {
+    super.initState();
+    auth.getCurrentUser().then((user) {
+      setState(() {
+        if (user != null) {
+          uid = user?.uid;
+        }
+      });
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +100,7 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
 
   Widget _buildReviewBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('reviews').where('uid',isEqualTo: widget.uid).snapshots(),
+      stream: Firestore.instance.collection('reviews').where('uid',isEqualTo: uid).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Text('You have no reviews!');
