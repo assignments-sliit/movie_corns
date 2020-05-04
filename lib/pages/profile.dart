@@ -195,8 +195,8 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   _displayDialog(BuildContext context, DocumentSnapshot snapshot) async {
-    TextEditingController fnameController;
-    TextEditingController surnameConroller;
+    TextEditingController fnameController = new TextEditingController();
+    TextEditingController surnameConroller = new TextEditingController();
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -211,13 +211,13 @@ class _ProfilePageState extends State<ProfilePage>
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextFormField(
+                    TextField(
                       controller: fnameController,
                       decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: snapshot["fname"]),
                     ),
-                    TextFormField(
+                    TextField(
                       controller: surnameConroller,
                       decoration: InputDecoration(
                           border: InputBorder.none,
@@ -235,21 +235,40 @@ class _ProfilePageState extends State<ProfilePage>
                 },
               ),
               FlatButton(
+                //enableFeedback: 
                 onPressed: () {
-                  String fname =fnameController.text;
-                  String surname = surnameConroller.text;
+                  //return false;
+                  if(surnameConroller.text.isEmpty ||
+                    fnameController.text.isEmpty){
+                  String fname = "";
+                  String surname = "";
 
-                 
+                  if (fnameController.text.isEmpty)
+                    fname = snapshot["fname"];
+                  else
+                    fname = fnameController.text;
+
+                  if (surnameConroller.text.isEmpty)
+                    surname = snapshot["surname"];
+                  else
+                    surname = surnameConroller.text;
+
+                  print(widget.uid);
 
                   Firestore.instance
                       .collection('users')
                       .document(userId)
                       .setData({
-                    "fname":
-                        fname ?? snapshot["fname"],
-                    "surname":
-                       surname ?? snapshot["surname"]
+                    "fname": fname,
+                    "surname": surname,
+                    "email": snapshot["email"],
+                    "uid": userId
                   });
+                  Navigator.of(context).pop();
+                  return true;
+                  }else{
+                    return false;
+                  }
                 },
                 child: Text("UPDATE"),
               ),
