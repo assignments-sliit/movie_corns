@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_corns/api/services/auth.dart';
+import 'package:movie_corns/constants/constants.dart';
 import 'package:movie_corns/pages/view_movieDetail.dart';
-//import 'package:movie_corns/pages/login.dart'; <-- later
 
 class MoviePage extends StatefulWidget {
   MoviePage({Key key, this.title, this.uid, this.movieId})
-      : super(key: key); //update this to include the uid in the constructor
+      : super(key: key); 
   final String title;
-  final String uid; //include this
+  final String uid; 
   final String movieId;
   final Auth auth = new Auth();
 
@@ -37,7 +37,7 @@ class _MoviePageState extends State<MoviePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("All Movies"),
+          title: Text(TitleConstants.ALL_MOVIES),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.exit_to_app),
@@ -46,20 +46,19 @@ class _MoviePageState extends State<MoviePage> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text("Sign Out"),
-                        content: Text("Are you sure want to sign out?"),
+                        title: Text(TitleConstants.ALERT_SIGN_OUT),
+                        content: Text(PromptConstants.QUESTION_CONFIRM_SIGN_OUT),
                         actions: [
                           FlatButton(
-                            child: Text("CANCEL"),
+                            child: Text(ButtonConstants.OPTION_CANCEL),
                             onPressed: () {
                               Navigator.pop(context);
                             },
                           ),
                           FlatButton(
-                            child: Text("YES"),
+                            child: Text(ButtonConstants.OPTION_YES),
                             onPressed: () {
                               widget.auth.signOut();
-                              print('User signout Complete');
                               Navigator.pushNamedAndRemoveUntil(
                                   context, "/login", (_) => false);
                             },
@@ -196,7 +195,6 @@ class _MoviePageState extends State<MoviePage> {
                   ),
                 ),
                 SizedBox(height: 10.0),
-                //start frm here
               ],
             ),
           ),

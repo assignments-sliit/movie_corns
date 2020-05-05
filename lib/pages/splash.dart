@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:movie_corns/constants/constants.dart';
 import 'home.dart';
 
 class SplashPage extends StatefulWidget {
@@ -11,7 +12,6 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  //final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   @override
   initState() {
     FirebaseAuth.instance
@@ -30,8 +30,7 @@ class _SplashPageState extends State<SplashPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => HomePage(
-                                        title: 'All Movies ',
-                                        //uid: currentUser.uid.toString(),
+                                        title: TitleConstants.ALL_MOVIES,
                                       ))))
                       .catchError((err) => print(err))
                 }

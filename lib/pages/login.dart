@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:movie_corns/api/services/auth.dart';
+import 'package:movie_corns/constants/constants.dart';
 import 'package:movie_corns/pages/home.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:toast/toast.dart';
@@ -32,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
     if (!regex.hasMatch(value)) {
-      return 'Email format is invalid';
+      return ValidatorConstants.INVALID_EMAIL_FORMAT;
     } else {
       return null;
     }
@@ -40,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
 
   String pwdValidator(String value) {
     if (value.length < 8) {
-      return 'Password must be longer than 8 characters';
+      return ValidatorConstants.WEAK_PASSWORD;
     } else {
       return null;
     }
@@ -50,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     pr = new ProgressDialog(context, type: ProgressDialogType.Normal);
     pr.style(
-        message: 'Logging in....',
+        message: ProgressDialogMesssageConstants.LOGGING_IN,
         borderRadius: 10.0,
         backgroundColor: Colors.white,
         progressWidget: CircularProgressIndicator(),
@@ -65,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            "Login to Movie Corns",
+            TitleConstants.LOGIN,
             textAlign: TextAlign.justify,
           ),
         ),
@@ -78,14 +79,14 @@ class _LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   TextFormField(
                     decoration: InputDecoration(
-                        labelText: 'Email ID', hintText: "jothipala@gmail.com"),
+                        labelText: LabelConstants.LABEL_EMAIL, hintText: HintTextConstants.HINT_EMAIL),
                     controller: emailInputController,
                     keyboardType: TextInputType.emailAddress,
                     validator: emailValidator,
                   ),
                   TextFormField(
                     decoration: InputDecoration(
-                        labelText: 'Password', hintText: "********"),
+                        labelText: LabelConstants.LABEL_PASSWORD, hintText: HintTextConstants.HINT_PASSWORD),
                     controller: pwdInputController,
                     obscureText: true,
                     validator: pwdValidator,
@@ -98,9 +99,9 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(19)),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment
-                          .center, // Replace with a Row for horizontal icon + text
+                          .center, 
                       children: <Widget>[
-                        Text("START REVIEWING   "),
+                        Text(ButtonConstants.LOGIN_BUTTON),
                         Icon(Icons.arrow_forward),
                       ],
                     ),
@@ -123,13 +124,13 @@ class _LoginPageState extends State<LoginPage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) => HomePage(
-                                                    title: 'All Movies',
+                                                    title: TitleConstants.ALL_MOVIES,
                                                     uid: currentUser.user.uid,
                                                   )));
                                     }).whenComplete(() {
-                                      Toast.show('Welcome!', context,
+                                      Toast.show(ToastConstants.WELCOME, context,
                                           duration: Toast.LENGTH_LONG,
-                                          gravity: Toast.CENTER);
+                                          gravity: Toast.BOTTOM);
                                     }))
                                 .catchError((err) => print(err)))
                             .catchError((err) {
@@ -142,14 +143,13 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     height: 300,
                   ),
-                  Text("New Here?"),
+                  Text(LabelConstants.LABEL_NEW_HERE),
                   RaisedButton(
                     textColor: Theme.of(context).primaryColor,
-                    
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(19)),
-                    child: Text("JOIN MOVIE CORNS"),
+                    child: Text(ButtonConstants.JOIN_BUTTON),
                     onPressed: () {
                       Navigator.pushNamed(context, "/register");
                     },
@@ -161,13 +161,13 @@ class _LoginPageState extends State<LoginPage> {
 
   void showAuthError(errorCode, BuildContext context) {
     switch (errorCode) {
-      case "ERROR_WRONG_PASSWORD":
-        Toast.show('Incorrect Password', context,
+      case FirebaseAuthErrorConstants.ERROR_WRONG_PASSWORD:
+        Toast.show(ToastConstants.INCORRECT_PASSWORD, context,
             duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
         break;
 
       default:
-        Toast.show('Unknown Authentication Error', context,
+        Toast.show(ToastConstants.UNKNOWN_AUTH_ERROR, context,
             duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
         break;
     }

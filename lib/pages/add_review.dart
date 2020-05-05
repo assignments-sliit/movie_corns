@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-//import 'package:movie_corns/api/models/Movie.dart';
 import 'package:movie_corns/api/services/auth.dart';
-//import 'package:movie_corns/api/models/Review.dart';
 
 class AddReviewPage extends StatefulWidget {
   final movieId;

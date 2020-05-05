@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:movie_corns/constants/constants.dart';
 import 'package:movie_corns/pages/home.dart';
-
+import 'package:progress_dialog/progress_dialog.dart';
 
 class RegisterPage extends StatefulWidget {
   RegisterPage({Key key}) : super(key: key);
@@ -18,6 +19,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController emailInputController;
   TextEditingController pwdInputController;
   TextEditingController confirmPwdInputController;
+  ProgressDialog pr;
 
   @override
   initState() {
@@ -34,7 +36,7 @@ class _RegisterPageState extends State<RegisterPage> {
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
     if (!regex.hasMatch(value)) {
-      return 'Email format is invalid';
+      return ValidatorConstants.INVALID_EMAIL_FORMAT;
     } else {
       return null;
     }
@@ -42,7 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   String pwdValidator(String value) {
     if (value.length < 8) {
-      return 'Password must be longer than 8 characters';
+      return ValidatorConstants.WEAK_PASSWORD;
     } else {
       return null;
     }
@@ -50,9 +52,23 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    pr = new ProgressDialog(context, type: ProgressDialogType.Normal);
+    pr.style(
+        message: ProgressDialogMesssageConstants.WELCOME_ABOARD,
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: CircularProgressIndicator(),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progress: 0.0,
+        maxProgress: 100.0,
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600));
     return Scaffold(
         appBar: AppBar(
-          title: Text("Register"),
+          title: Text(TitleConstants.REGISTER),
         ),
         body: Container(
             padding: const EdgeInsets.all(20.0),
@@ -63,62 +79,69 @@ class _RegisterPageState extends State<RegisterPage> {
                 children: <Widget>[
                   TextFormField(
                     decoration: InputDecoration(
-                        labelText: 'First Name*', hintText: "John"),
+                        labelText: LabelConstants.LABEL_FIRST_NAME,
+                        hintText: HintTextConstants.HINT_FIRST_NAME),
                     controller: firstNameInputController,
                     validator: (value) {
                       if (value.length < 3) {
-                        return "Please enter a valid first name.";
+                        return ValidatorConstants.INVALID_FIRST_NAME;
                       }
                     },
                   ),
                   TextFormField(
                       decoration: InputDecoration(
-                          labelText: 'Last Name*', hintText: "Doe"),
+                          labelText: LabelConstants.LABEL_LAST_NAME,
+                          hintText: HintTextConstants.HINT_LAST_NAME),
                       controller: lastNameInputController,
                       validator: (value) {
                         if (value.length < 3) {
-                          return "Please enter a valid last name.";
+                          return ValidatorConstants.INVALID_LAST_NAME;
                         }
                       }),
                   TextFormField(
                     decoration: InputDecoration(
-                        labelText: 'Email*', hintText: "jothipala@gmail.com"),
+                        labelText: LabelConstants.LABEL_EMAIL,
+                        hintText: HintTextConstants.HINT_EMAIL),
                     controller: emailInputController,
                     keyboardType: TextInputType.emailAddress,
                     validator: emailValidator,
                   ),
                   TextFormField(
                     decoration: InputDecoration(
-                        labelText: 'Password*', hintText: "********"),
+                        labelText: LabelConstants.LABEL_PASSWORD,
+                        hintText: HintTextConstants.HINT_PASSWORD),
                     controller: pwdInputController,
                     obscureText: true,
                     validator: pwdValidator,
                   ),
                   TextFormField(
                     decoration: InputDecoration(
-                        labelText: 'Confirm Password*', hintText: "********"),
+                        labelText: LabelConstants.LABEL_CONFIRM_PASSWORD,
+                        hintText: HintTextConstants.HINT_PASSWORD),
                     controller: confirmPwdInputController,
                     obscureText: true,
                     validator: pwdValidator,
                   ),
-                  SizedBox(height: 20,),
+                  SizedBox(
+                    height: 20,
+                  ),
                   RaisedButton(
-                 shape: RoundedRectangleBorder(
+                    shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(19)),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment
-                          .center, // Replace with a Row for horizontal icon + text
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text("JOIN MOVIE CORNS  "),
+                        Text(ButtonConstants.JOIN_BUTTON),
                         Icon(Icons.arrow_forward),
                       ],
                     ),
                     color: Theme.of(context).primaryColor,
                     textColor: Colors.white,
-                    onPressed: () {
+                    onPressed: () async {
                       if (_registerFormKey.currentState.validate()) {
                         if (pwdInputController.text ==
                             confirmPwdInputController.text) {
+                          await pr.show();
                           FirebaseAuth.instance
                               .createUserWithEmailAndPassword(
                                   email: emailInputController.text,
@@ -133,17 +156,19 @@ class _RegisterPageState extends State<RegisterPage> {
                                     "email": emailInputController.text,
                                   })
                                   .then((result) => {
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => HomePage(
-                                                      title:
-                                                          firstNameInputController
-                                                                  .text +
-                                                              "'s Tasks",
-                                                      uid: currentUser.user.uid,
-                                                    )),
-                                            (_) => false),
+                                        pr.hide().then((isHidden) {
+                                          Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      HomePage(
+                                                        title: TitleConstants
+                                                            .ALL_MOVIES,
+                                                        uid: currentUser
+                                                            .user.uid,
+                                                      )),
+                                              (_) => false);
+                                        }),
                                         firstNameInputController.clear(),
                                         lastNameInputController.clear(),
                                         emailInputController.clear(),
@@ -157,11 +182,11 @@ class _RegisterPageState extends State<RegisterPage> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text("Error"),
-                                  content: Text("The passwords do not match"),
+                                  title: Text(TitleConstants.ALERT_ERROR),
+                                  content: Text(ValidatorConstants.PASSWORDS_DO_NOT_MATCH),
                                   actions: <Widget>[
                                     FlatButton(
-                                      child: Text("Close"),
+                                      child: Text(ButtonConstants.OPTION_CLOSE),
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
@@ -173,15 +198,16 @@ class _RegisterPageState extends State<RegisterPage> {
                       }
                     },
                   ),
-                  SizedBox(height: 130,),
-                  Text("Already have an account?"),
+                  SizedBox(
+                    height: 130,
+                  ),
+                  Text(LabelConstants.LABEL_ALREADY_HAVE_ACCOUNT),
                   RaisedButton(
                     textColor: Theme.of(context).primaryColor,
-                    
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(19)),
-                    child: Text("LOGIN"),
+                    child: Text(ButtonConstants.LOGIN),
                     onPressed: () {
                       Navigator.pop(context);
                     },

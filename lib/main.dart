@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_corns/constants/constants.dart';
 import 'package:movie_corns/pages/view_movieDetail.dart';
 import 'package:movie_corns/pages/home.dart';
 import 'package:movie_corns/pages/login.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
         ),
         home: SplashPage(),
         routes: <String, WidgetBuilder>{
-          '/home': (BuildContext context) => HomePage(title: 'All Movies'),
+          '/home': (BuildContext context) => HomePage(title: TitleConstants.ALL_MOVIES),
           '/my': (BuildContext context) => MyReviewsPage(),
           '/profile': (BuildContext context) => ProfilePage(),
           '/movie': (BuildContext context) => MoviePage(),

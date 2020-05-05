@@ -3,12 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:movie_corns/api/services/auth.dart';
+import 'package:movie_corns/constants/constants.dart';
 
 class ProfilePage extends StatefulWidget {
-  ProfilePage({Key key, this.title, this.uid})
-      : super(key: key); //update this to include the uid in the constructor
+  ProfilePage({Key key, this.title, this.uid}) : super(key: key);
   final String title;
-  final String uid; //include this
+  final String uid;
   final Auth auth = new Auth();
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -35,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage>
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Text("Your Profile"),
+          title: Text(TitleConstants.PROFILE),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.exit_to_app),
@@ -44,20 +44,20 @@ class _ProfilePageState extends State<ProfilePage>
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text("Sign Out"),
-                        content: Text("Are you sure want to sign out?"),
+                        title: Text(TitleConstants.ALERT_SIGN_OUT),
+                        content:
+                            Text(PromptConstants.QUESTION_CONFIRM_SIGN_OUT),
                         actions: [
                           FlatButton(
-                            child: Text("CANCEL"),
+                            child: Text(ButtonConstants.OPTION_CANCEL),
                             onPressed: () {
                               Navigator.pop(context);
                             },
                           ),
                           FlatButton(
-                            child: Text("YES"),
+                            child: Text(ButtonConstants.OPTION_YES),
                             onPressed: () {
                               widget.auth.signOut();
-                              print('User signout Complete');
                               Navigator.pushNamedAndRemoveUntil(
                                   context, "/login", (_) => false);
                             },
@@ -85,7 +85,6 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Widget _movieDetailBody(BuildContext context, DocumentSnapshot snapshot) {
-    print(userId);
     final rating = Container(
       padding: const EdgeInsets.all(7.0),
       decoration: new BoxDecoration(
@@ -124,8 +123,7 @@ class _ProfilePageState extends State<ProfilePage>
             height: MediaQuery.of(context).size.height * 0.5,
             decoration: new BoxDecoration(
               image: new DecorationImage(
-                  image: new NetworkImage(
-                      "https://images.squarespace-cdn.com/content/v1/5b2c320e96e76f7d01013067/1530825643239-9KF07AF9QGKARM6XQKY4/ke17ZwdGBToddI8pDm48kOQScsc5TY8jCuObUFgfhqRZw-zPPgdn4jUwVcJE1ZvWQUxwkmyExglNqGp0IvTJZUJFbgE-7XRK3dMEBRBhUpydfvc957wEB9Bk1XYZkNiy-OPlMj7dW9OZ3-IR2fYHYSbnS5Sr8t-axcDC25WJZaM/Man-Gentleman-Silhouette-Gray-Free-Illustrations-F-0424.jpg"),
+                  image: new NetworkImage(NetworkImagesPath.PROFILE_AVATAR),
                   fit: BoxFit.cover),
             )),
         Container(
@@ -149,7 +147,8 @@ class _ProfilePageState extends State<ProfilePage>
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(19)),
           onPressed: () => {_displayDialog(context, snapshot)},
           color: Theme.of(context).primaryColor,
-          label: Text("EDIT PROFILE", style: TextStyle(color: Colors.white)),
+          label: Text(ButtonConstants.EDIT_PROFILE,
+              style: TextStyle(color: Colors.white)),
         ));
 
     final deleteAccountButton = Container(
@@ -164,12 +163,12 @@ class _ProfilePageState extends State<ProfilePage>
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    title: Text('Warning!'),
-                    content: Text(
-                        'Deleting an account will delete everything! Continue?'),
+                    title: Text(TitleConstants.ALERT_WARNING),
+                    content:
+                        Text(PromptConstants.QUESTION_CONFIRM_ACCOUNT_DELETE),
                     actions: <Widget>[
                       FlatButton(
-                        child: Text('CANCEL'),
+                        child: Text(ButtonConstants.OPTION_CANCEL),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
@@ -177,57 +176,48 @@ class _ProfilePageState extends State<ProfilePage>
                       FlatButton(
                         textColor: Colors.red,
                         onPressed: () async {
-                          //delete reviews
                           final Firestore firestore = Firestore.instance;
                           final FirebaseAuth firebaseAuth =
                               FirebaseAuth.instance;
-                          //delete doc
 
-                          //signout
-
-                          //delete user from auth
                           FirebaseUser user1 = await firebaseAuth.currentUser();
 
-                            firestore
-                                .collection('reviews')
-                                .getDocuments()
-                                .then((snap) {
-                              for (DocumentSnapshot ds in snap.documents) {
-                                  if(ds.data["uid"] == userId){
-                                    ds.reference.delete();
-                                  }
+                          firestore
+                              .collection('reviews')
+                              .getDocuments()
+                              .then((snap) {
+                            for (DocumentSnapshot ds in snap.documents) {
+                              if (ds.data["uid"] == userId) {
+                                ds.reference.delete();
                               }
-                            });
+                            }
+                          });
 
-                            firestore
-                                .collection('users')
-                                .getDocuments()
-                                .then((users){
-                                  for(DocumentSnapshot us in users.documents){
-                                    if(us.data["uid"] == userId){
-                                      us.reference.delete();
-                                    }
-                                  }
-                                });
+                          firestore
+                              .collection('users')
+                              .getDocuments()
+                              .then((users) {
+                            for (DocumentSnapshot us in users.documents) {
+                              if (us.data["uid"] == userId) {
+                                us.reference.delete();
+                              }
+                            }
+                          });
 
-                                
                           user1.delete();
-
-
-                          //show login screen
                           widget.auth.signOut();
-                          print('User delete Complete');
                           Navigator.pushNamedAndRemoveUntil(
                               context, "/login", (_) => false);
                         },
-                        child: Text("DELETE"),
+                        child: Text(ButtonConstants.OPTION_DELETE),
                       ),
                     ],
                   );
                 })
           },
           color: Colors.red,
-          label: Text("DELETE PROFILE", style: TextStyle(color: Colors.white)),
+          label: Text(ButtonConstants.DELETE_PROFILE,
+              style: TextStyle(color: Colors.white)),
         ));
 
     final bottomContent = Container(
@@ -240,7 +230,6 @@ class _ProfilePageState extends State<ProfilePage>
       ),
     );
 
-    //and fiiiinally..........
     return new Scaffold(
       body: Column(
         children: <Widget>[headerContent, bottomContent],
@@ -249,8 +238,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   String getMovieUrl(String snapUrl) {
-    if (snapUrl.isEmpty)
-      return "https://www.google.com/url?sa=i&url=http%3A%2F%2Fgearr.scannain.com%2Fmovies%2Fcharlie-lennon-ceol-on-gcroi%2F&psig=AOvVaw2yh_ZWeDf6OwCYaUroCkSU&ust=1588220621163000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCJi9_YHljOkCFQAAAAAdAAAAABAI";
+    if (snapUrl.isEmpty) return NetworkImagesPath.MOVIE_AVATAR;
 
     return snapUrl;
   }
@@ -268,7 +256,7 @@ class _ProfilePageState extends State<ProfilePage>
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Edit Profile'),
+            title: Text(TitleConstants.ALERT_EDIT_PROFILE),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0)), //this right here
             content: Container(
@@ -296,7 +284,7 @@ class _ProfilePageState extends State<ProfilePage>
             ),
             actions: <Widget>[
               FlatButton(
-                child: Text('CANCEL'),
+                child: Text(ButtonConstants.OPTION_CANCEL),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -336,7 +324,7 @@ class _ProfilePageState extends State<ProfilePage>
                     return false;
                   }
                 },
-                child: Text("UPDATE"),
+                child: Text(ButtonConstants.OPTION_UPDATE),
               ),
             ],
           );

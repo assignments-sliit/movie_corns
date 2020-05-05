@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:movie_corns/api/services/auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:movie_corns/constants/constants.dart';
 import 'package:movie_corns/pages/add_review.dart';
 import 'package:movie_corns/pages/home.dart';
 
@@ -23,17 +24,16 @@ class ViewMovieDetailPage extends StatelessWidget {
               automaticallyImplyLeading: false,
               title: Text("Movie Details"),
               leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => HomePage(
-                                                    title: 'All Movies',
-                                                    uid: uid,
-                                                  )));
-                }
-              ),
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HomePage(
+                                  title: TitleConstants.ALL_MOVIES,
+                                  uid: uid,
+                                )));
+                  }),
               actions: <Widget>[
                 IconButton(
                   icon: Icon(Icons.exit_to_app),
@@ -42,20 +42,20 @@ class ViewMovieDetailPage extends StatelessWidget {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text("Sign Out"),
-                            content: Text("Are you sure want to sign out?"),
+                            title: Text(TitleConstants.ALERT_SIGN_OUT),
+                            content:
+                                Text(PromptConstants.QUESTION_CONFIRM_SIGN_OUT),
                             actions: [
                               FlatButton(
-                                child: Text("CANCEL"),
+                                child: Text(ButtonConstants.OPTION_CANCEL),
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
                               ),
                               FlatButton(
-                                child: Text("YES"),
+                                child: Text(ButtonConstants.OPTION_YES),
                                 onPressed: () {
                                   auth.signOut();
-                                  print('User signout Complete');
                                   Navigator.pushNamedAndRemoveUntil(
                                       context, "/login", (_) => false);
                                 },
@@ -170,39 +170,20 @@ class ViewMovieDetailPage extends StatelessWidget {
       style: TextStyle(fontSize: 15.5),
     );
 
-    // final addReviewButton = Container(
-    //     padding: EdgeInsets.symmetric(vertical: 16.0),
-    //     width: MediaQuery.of(context).size.width,
-    //     child: RaisedButton.icon(
-    //       icon: Icon(Icons.add, color: Colors.white),
-    //       shape:
-    //           RoundedRectangleBorder(borderRadius: BorderRadius.circular(19)),
-    //       onPressed: () => {
-    //         //Amashi start
-    //         Navigator.of(context).push(MaterialPageRoute(
-    //             builder: (context) => AddReviewPage(
-    //                   uid: uid,
-    //                   movieId: snapshot.documentID,
-    //                 )))
-    //         //Amashi end
-    //       },
-    //       color: Colors.blue,
-    //       label: Text("ADD REVIEW", style: TextStyle(color: Colors.white)),
-    //     ));
-
-    final addReviewButtonFloating =  FloatingActionButton.extended( label: Text('ADD REVIEW'),
+    final addReviewButtonFloating = FloatingActionButton.extended(
+      label: Text('ADD REVIEW'),
       icon: Icon(Icons.rate_review),
       backgroundColor: Theme.of(context).primaryColor,
       onPressed: () {
-          //Amashi start
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => AddReviewPage(
-                    uid: uid,
-                    movieId: snapshot.documentID,
-                  )));
-          //Amashi end
-        },
-        );
+        //Amashi start
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => AddReviewPage(
+                  uid: uid,
+                  movieId: snapshot.documentID,
+                )));
+        //Amashi end
+      },
+    );
 
     final bottomContent = Container(
       width: MediaQuery.of(context).size.width,
@@ -214,7 +195,6 @@ class ViewMovieDetailPage extends StatelessWidget {
       ),
     );
 
-    //and fiiiinally..........
     return new Scaffold(
       body: Column(
         children: <Widget>[headerContent, bottomContent],
@@ -225,7 +205,7 @@ class ViewMovieDetailPage extends StatelessWidget {
 
   String getMovieUrl(String snapUrl) {
     if (snapUrl.isEmpty)
-      return "https://www.google.com/url?sa=i&url=http%3A%2F%2Fgearr.scannain.com%2Fmovies%2Fcharlie-lennon-ceol-on-gcroi%2F&psig=AOvVaw2yh_ZWeDf6OwCYaUroCkSU&ust=1588220621163000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCJi9_YHljOkCFQAAAAAdAAAAABAI";
+      return NetworkImagesPath.MOVIE_AVATAR;
 
     return snapUrl;
   }
