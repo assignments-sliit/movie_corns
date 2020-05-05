@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:movie_corns/api/services/auth.dart';
@@ -158,7 +159,73 @@ class _ProfilePageState extends State<ProfilePage>
           icon: Icon(Icons.delete, color: Colors.white),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(19)),
-          onPressed: () => {},
+          onPressed: () => {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text('Warning!'),
+                    content: Text(
+                        'Deleting an account will delete everything! Continue?'),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text('CANCEL'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      FlatButton(
+                        textColor: Colors.red,
+                        onPressed: () async {
+                          //delete reviews
+                          final Firestore firestore = Firestore.instance;
+                          final FirebaseAuth firebaseAuth =
+                              FirebaseAuth.instance;
+                          //delete doc
+
+                          //signout
+
+                          //delete user from auth
+                          FirebaseUser user1 = await firebaseAuth.currentUser();
+
+                            firestore
+                                .collection('reviews')
+                                .getDocuments()
+                                .then((snap) {
+                              for (DocumentSnapshot ds in snap.documents) {
+                                  if(ds.data["uid"] == userId){
+                                    ds.reference.delete();
+                                  }
+                              }
+                            });
+
+                            firestore
+                                .collection('users')
+                                .getDocuments()
+                                .then((users){
+                                  for(DocumentSnapshot us in users.documents){
+                                    if(us.data["uid"] == userId){
+                                      us.reference.delete();
+                                    }
+                                  }
+                                });
+
+                                
+                          user1.delete();
+
+
+                          //show login screen
+                          widget.auth.signOut();
+                          print('User delete Complete');
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, "/login", (_) => false);
+                        },
+                        child: Text("DELETE"),
+                      ),
+                    ],
+                  );
+                })
+          },
           color: Colors.red,
           label: Text("DELETE PROFILE", style: TextStyle(color: Colors.white)),
         ));
@@ -235,38 +302,37 @@ class _ProfilePageState extends State<ProfilePage>
                 },
               ),
               FlatButton(
-                //enableFeedback: 
                 onPressed: () {
                   //return false;
-                  if(surnameConroller.text.isEmpty ||
-                    fnameController.text.isEmpty){
-                  String fname = "";
-                  String surname = "";
+                  if (surnameConroller.text.isEmpty ||
+                      fnameController.text.isEmpty) {
+                    String fname = "";
+                    String surname = "";
 
-                  if (fnameController.text.isEmpty)
-                    fname = snapshot["fname"];
-                  else
-                    fname = fnameController.text;
+                    if (fnameController.text.isEmpty)
+                      fname = snapshot["fname"];
+                    else
+                      fname = fnameController.text;
 
-                  if (surnameConroller.text.isEmpty)
-                    surname = snapshot["surname"];
-                  else
-                    surname = surnameConroller.text;
+                    if (surnameConroller.text.isEmpty)
+                      surname = snapshot["surname"];
+                    else
+                      surname = surnameConroller.text;
 
-                  print(widget.uid);
+                    print(widget.uid);
 
-                  Firestore.instance
-                      .collection('users')
-                      .document(userId)
-                      .setData({
-                    "fname": fname,
-                    "surname": surname,
-                    "email": snapshot["email"],
-                    "uid": userId
-                  });
-                  Navigator.of(context).pop();
-                  return true;
-                  }else{
+                    Firestore.instance
+                        .collection('users')
+                        .document(userId)
+                        .setData({
+                      "fname": fname,
+                      "surname": surname,
+                      "email": snapshot["email"],
+                      "uid": userId
+                    });
+                    Navigator.of(context).pop();
+                    return true;
+                  } else {
                     return false;
                   }
                 },
