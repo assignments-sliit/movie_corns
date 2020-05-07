@@ -6,11 +6,9 @@ import 'package:movie_corns/api/services/auth.dart';
 
 class AddReviewPage extends StatefulWidget {
   final movieId;
-  final movieTitle;
   final uid;
 
-  AddReviewPage({Key key, this.movieId, this.movieTitle, this.uid})
-      : super(key: key);
+  AddReviewPage({Key key, this.movieId, this.uid}) : super(key: key);
 
   @override
   ReviewFormBodyState createState() => new ReviewFormBodyState();
@@ -162,8 +160,8 @@ class ReviewFormBodyState extends State<AddReviewPage> {
                     child: RaisedButton(
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
-                          addReviewFirebase(review, rating, widget.movieId,
-                              widget.uid, widget.movieTitle);
+                          addReviewFirebase(
+                              review, rating, widget.movieId, widget.uid);
                         }
                         Navigator.pushNamedAndRemoveUntil(
                             context, "/home", (_) => false);
@@ -192,14 +190,13 @@ class ReviewFormBodyState extends State<AddReviewPage> {
     ));
   }
 
-  void addReviewFirebase(String review, double rating, String movieId,
-      String uid, String movieTitle) {
+  void addReviewFirebase(
+      String review, double rating, String movieId, String uid) {
     Map<String, dynamic> data = Map();
     data['review'] = review;
     data['rating'] = rating;
     data['movieId'] = movieId;
     data['uid'] = uid;
-    data['movieTitle'] = movieTitle;
 
     reference.add(data);
   }

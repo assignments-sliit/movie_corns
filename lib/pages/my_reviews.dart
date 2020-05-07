@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:movie_corns/pages/view_review.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
+//import 'package:movie_corns/api/models/Movie.dart';
 import 'package:movie_corns/api/services/auth.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class MyReviewsPage extends StatefulWidget {
   final String title;
   final dynamic uid;
   final movieId; //include this
   final reviewId;
-  final movieTitle;
 
-  MyReviewsPage(
-      {Key key,
-      this.title,
-      this.uid,
-      this.movieId,
-      this.reviewId,
-      this.movieTitle})
+  MyReviewsPage({Key key, this.title, this.uid, this.movieId, this.reviewId})
       : super(key: key);
 
   //final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -28,18 +22,6 @@ class MyReviewsPage extends StatefulWidget {
 
 class _MyReviewsPageState extends State<MyReviewsPage> {
   final Auth auth = new Auth();
-
-  Function toast(
-      String msg, Toast toast, ToastGravity toastGravity, Color colors) {
-    Fluttertoast.showToast(
-        msg: msg,
-        toastLength: toast,
-        gravity: toastGravity,
-        timeInSecForIosWeb: 1,
-        backgroundColor: colors,
-        textColor: Colors.white,
-        fontSize: 16.0);
-  }
 
   static final fullStar = Icon(
     Icons.star,
@@ -61,9 +43,9 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[fullStar, fullStar, fullStar, halfStar, starBorder],
   );
-  String uid = "";
+String uid = "";
 
-  @override
+ @override
   void initState() {
     super.initState();
     auth.getCurrentUser().then((user) {
@@ -74,7 +56,7 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
       });
     });
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,10 +100,7 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
 
   Widget _buildReviewBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance
-          .collection('reviews')
-          .where('uid', isEqualTo: uid)
-          .snapshots(),
+      stream: Firestore.instance.collection('reviews').where('uid',isEqualTo: uid).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData || snapshot.data.documents.length <1) {
           return Text('You have no reviews!');
@@ -153,9 +132,7 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
         ),
         Row(
           children: <Widget>[
-            SizedBox(
-              height: 30.0,
-            ),
+            SizedBox(height: 30.0,),
             Padding(
               padding: EdgeInsets.all(5.0),
               child: Text('All your reviews'),
@@ -204,15 +181,6 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
                       borderColor: Colors.blue,
                       spacing: 0.0,
                     ),
-                  ],
-                ),
-                subtitle: Padding(
-                  padding: EdgeInsets.all(12.0),
-                  child: Text("${record.movieTitle} -  ${record.review}"),
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
                     IconButton(
                       icon: new Icon(Icons.edit),
                       color: Colors.green,
@@ -221,54 +189,12 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
                     IconButton(
                         icon: new Icon(Icons.delete),
                         color: Colors.red,
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text('Warning'),
-                                  content: Text(
-                                      'Do you want to delete the review permanently?'),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      child: Text('Cancel'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                    FlatButton(
-                                      child: Text("Delete"),
-                                      onPressed: () {
-                                        final Firestore firestore =
-                                            Firestore.instance;
-
-                                        firestore
-                                            .collection('reviews')
-                                            .getDocuments()
-                                            .then((snap) {
-                                          for (DocumentSnapshot snapshot
-                                              in snap.documents) {
-                                            if (snapshot.documentID ==
-                                                record.reference.documentID) {
-                                              snapshot.reference.delete();
-                                            }
-                                          }
-                                        });
-
-                                        toast(
-                                            "Review deleted successfully!!",
-                                            Toast.LENGTH_LONG,
-                                            ToastGravity.BOTTOM,
-                                            Colors.blueGrey);
-
-                                        Navigator.of(context).pop();
-                                      },
-                                    )
-                                  ],
-                                );
-                              });
-                        })
+                        onPressed: () {}),
                   ],
+                ),
+                subtitle: Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Text(record.review),
                 ),
                 isThreeLine: true,
               ),
@@ -305,18 +231,15 @@ class Record {
   String review;
   num rating;
   String movieId;
-  String movieTitle;
   final DocumentReference reference;
 
   Record.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['review'] != null),
         assert(map['rating'] != null),
         assert(map['movieId'] != null),
-        assert(map['movieTitle'] != null),
         review = map['review'],
         rating = map['rating'],
-        movieId = map['movieId'],
-        movieTitle = map['movieTitle'];
+        movieId = map['movieId'];
 
   Record.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);
