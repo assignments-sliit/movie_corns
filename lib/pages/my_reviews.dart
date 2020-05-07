@@ -102,11 +102,13 @@ String uid = "";
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('reviews').where('uid',isEqualTo: uid).snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
+        if (!snapshot.hasData || snapshot.data.documents.length <1) {
           return Text('You have no reviews!');
+        }else{
+        return _buildReviewList(context, snapshot.data.documents);
+
         }
 
-        return _buildReviewList(context, snapshot.data.documents);
       },
     );
   }

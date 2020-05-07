@@ -292,8 +292,7 @@ class _ProfilePageState extends State<ProfilePage>
               FlatButton(
                 onPressed: () {
                   //return false;
-                  if (surnameConroller.text.isEmpty ||
-                      fnameController.text.isEmpty) {
+                 
                     String fname = "";
                     String surname = "";
 
@@ -320,9 +319,7 @@ class _ProfilePageState extends State<ProfilePage>
                     });
                     Navigator.of(context).pop();
                     return true;
-                  } else {
-                    return false;
-                  }
+                
                 },
                 child: Text(ButtonConstants.OPTION_UPDATE),
               ),

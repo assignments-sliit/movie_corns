@@ -19,7 +19,7 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController emailInputController;
   TextEditingController pwdInputController;
   TextEditingController confirmPwdInputController;
-  ProgressDialog pr;
+  ProgressDialog pr1;
 
   @override
   initState() {
@@ -52,8 +52,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    pr = new ProgressDialog(context, type: ProgressDialogType.Normal);
-    pr.style(
+    pr1 = new ProgressDialog(context, type: ProgressDialogType.Normal);
+    pr1.style(
         message: ProgressDialogMesssageConstants.WELCOME_ABOARD,
         borderRadius: 10.0,
         backgroundColor: Colors.white,
@@ -141,7 +141,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       if (_registerFormKey.currentState.validate()) {
                         if (pwdInputController.text ==
                             confirmPwdInputController.text) {
-                          await pr.show();
+                          await pr1.show();
                           FirebaseAuth.instance
                               .createUserWithEmailAndPassword(
                                   email: emailInputController.text,
@@ -156,7 +156,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     "email": emailInputController.text,
                                   })
                                   .then((result) => {
-                                        pr.hide().then((isHidden) {
+                                        pr1.hide().then((isHidden) {
                                           Navigator.pushAndRemoveUntil(
                                               context,
                                               MaterialPageRoute(
