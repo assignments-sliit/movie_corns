@@ -136,7 +136,15 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData || snapshot.data.documents.length < 1) {
-          return Text(TitleConstants.NO_REVIEWS);
+          return Stack(
+            children: <Widget>[
+              Positioned(
+                top: 300.0,
+                left: 30.0,
+                child: Text(TitleConstants.NO_REVIEWS),
+              )
+            ],
+          );
         } else {
           return _buildReviewList(context, snapshot.data.documents);
         }

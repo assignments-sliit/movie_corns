@@ -33,7 +33,7 @@ class TitleConstants {
   static const String REGISTER = "Register";
 
   static const String ADD_MOVIE_REVIEW = "Add movie Review";
-  static const String NO_REVIEWS = "You have no Reviews!";
+  static const String NO_REVIEWS = "You have no Reviews. Add some to see them here!";
   static const String ALL_YOUR_REVIEWS = "All Your Reviews";
   static const String UPDATE_MOVIE_REVIEW = "Update Movie Review";
 
