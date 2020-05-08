@@ -12,7 +12,7 @@ import 'package:movie_corns/pages/add_review.dart';
 import 'pages/splash.dart';
 
 /*
- * IT17050272 - D. Manoj Kumar
+ * IT17050272 - D. Manoj Kumar | IT17143950 - G.M.A.S. Bastiansz
  * 
  * Includes all the routes which need to access the dart files
  */
