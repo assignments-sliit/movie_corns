@@ -3,12 +3,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:movie_corns/api/services/auth.dart';
+import 'package:movie_corns/constants/constants.dart';
+
+/*
+* IT17143950 - G.M.A.S. Bastiansz
+
+* The task of this add_review.dart file is providing a from to submit
+* the review of the user for a selected movie. Use is able to provide 
+* a comment & a rate (1-5) for the selected movie. Once the user submit
+* the Add Movie Review form, the entered comment & rating store in Firebase
+* database with the user ID, movie ID & the name of the selected movie 
+*/
 
 class AddReviewPage extends StatefulWidget {
   final movieId;
   final uid;
+  final movieTitle;
 
-  AddReviewPage({Key key, this.movieId, this.uid}) : super(key: key);
+  AddReviewPage({Key key, this.movieId, this.uid, this.movieTitle})
+      : super(key: key);
 
   @override
   ReviewFormBodyState createState() => new ReviewFormBodyState();
@@ -19,8 +32,8 @@ class ReviewFormBodyState extends State<AddReviewPage> {
   final reference = Firestore.instance.collection('reviews').reference();
   double rating = 0.0;
   String review = "";
-  DateTime ratingDate = DateTime.now();
 
+  //create a function for the toast
   Function toast(
       String msg, Toast toast, ToastGravity toastGravity, Color colors) {
     Fluttertoast.showToast(
@@ -44,10 +57,11 @@ class ReviewFormBodyState extends State<AddReviewPage> {
     print("User id:");
     print(widget.uid);
 
+    //start 'Add Movie Review' page
     return Container(
         child: Scaffold(
       appBar: AppBar(
-        title: Text("Add Review"),
+        title: Text(TitleConstants.ADD_MOVIE_REVIEW),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.exit_to_app),
@@ -56,20 +70,19 @@ class ReviewFormBodyState extends State<AddReviewPage> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text("Sign Out"),
-                      content: Text("Are you sure want to sign out?"),
+                      title: Text(TitleConstants.ALERT_SIGN_OUT),
+                      content: Text(PromptConstants.QUESTION_CONFIRM_SIGN_OUT),
                       actions: [
                         FlatButton(
-                          child: Text("CANCEL"),
+                          child: Text(ButtonConstants.OPTION_CANCEL),
                           onPressed: () {
                             Navigator.pop(context);
                           },
                         ),
                         FlatButton(
-                          child: Text("YES"),
+                          child: Text(ButtonConstants.OPTION_YES),
                           onPressed: () {
                             auth.signOut();
-                            print('User signout Complete');
                             Navigator.pushNamedAndRemoveUntil(
                                 context, "/login", (_) => false);
                           },
@@ -81,6 +94,8 @@ class ReviewFormBodyState extends State<AddReviewPage> {
           ),
         ],
       ),
+
+      //start 'Add Movie Review' form
       body: Container(
         padding: const EdgeInsets.fromLTRB(
             edgeInsetValue, 50.0, edgeInsetValue, edgeInsetValue),
@@ -94,10 +109,12 @@ class ReviewFormBodyState extends State<AddReviewPage> {
                   SizedBox(
                     height: 30.0,
                   ),
+
+                  //Start 'Comment' field
                   Padding(
                     padding: EdgeInsets.all(3.0),
                     child: Text(
-                      "Comment",
+                      LabelConstants.LABEL_COMMENT_FIELD,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
@@ -110,8 +127,10 @@ class ReviewFormBodyState extends State<AddReviewPage> {
                       setState(() {
                         this.review = comment;
                       });
+
+                      //Validating the 'Comment' field for empty values
                       if (comment.isEmpty) {
-                        return 'Comment field cannot be empty';
+                        return ValidatorConstants.COMMENT_CANNOT_NULL;
                       }
                       return null;
                     },
@@ -120,14 +139,16 @@ class ReviewFormBodyState extends State<AddReviewPage> {
                             EdgeInsets.fromLTRB(10.0, 35.0, 10.0, 5.0),
                         filled: true,
                         fillColor: Colors.white,
-                        hintText: "We like to hear from you!!",
+                        hintText: HintTextConstants.HINT_COMMENT_FIELD,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0))),
                   ),
+                  //End 'Comment' field
+                  //Start 'Rate Us' field
                   Padding(
                     padding: EdgeInsets.all(12.0),
                     child: Text(
-                      "Rate Us",
+                      LabelConstants.LABEL_RATING_FIELD,
                       textAlign: TextAlign.right,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -142,7 +163,7 @@ class ReviewFormBodyState extends State<AddReviewPage> {
                       onRatingChanged: (rateVal) {
                         setState(() {
                           rating = rateVal;
-                          print('The rating is $rating');
+                          //print('The rating is $rating');
                         });
                       },
                       starCount: 5,
@@ -155,32 +176,63 @@ class ReviewFormBodyState extends State<AddReviewPage> {
                       spacing: 0.0,
                     ),
                   ),
+                  //End 'Rate Us' field
+                  //Start button row
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(156.0, 20.0, 30.0, 5.0),
-                    child: RaisedButton(
-                      onPressed: () {
-                        if (_formKey.currentState.validate()) {
-                          addReviewFirebase(
-                              review, rating, widget.movieId, widget.uid);
-                        }
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, "/home", (_) => false);
+                      padding: const EdgeInsets.fromLTRB(50.0, 20.0, 10.0, 5.0),
+                      child: Row(
+                        children: <Widget>[
+                          //Start 'Submit Review' button
+                          RaisedButton(
+                            onPressed: () {
+                              if (_formKey.currentState.validate()) {
+                                addReviewFirebase(
+                                    review,
+                                    rating,
+                                    widget.movieId,
+                                    widget.uid,
+                                    widget.movieTitle);
+                              }
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, "/home", (_) => false);
 
-                        toast(
-                            "Your review added successfully!!",
-                            Toast.LENGTH_LONG,
-                            ToastGravity.BOTTOM,
-                            Colors.blueGrey);
-                      },
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(19)),
-                      color: Colors.blue,
-                      child: Text(
-                        'SUBMIT',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
+                              toast(
+                                  ToastConstants.ADD_REVIEW_SUCCESS,
+                                  Toast.LENGTH_LONG,
+                                  ToastGravity.BOTTOM,
+                                  Colors.blueGrey);
+                            },
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(19)),
+                            color: Colors.blue,
+                            child: Text(
+                              ButtonConstants.ADD_REVIEW,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10.0,
+                            width: 50.0,
+                          ),
+                          //End 'Submit Review' button
+                          //Start 'Cancel Review' button
+                          RaisedButton(
+                            onPressed: () {
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, "/movie", (_) => false);
+                            },
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(19)),
+                            color: Colors.red,
+                            child: Text(
+                              ButtonConstants.CANCEL_REVIEW,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )
+                          //End 'Cancel Review' button
+                        ],
+                      )),
+                  //End Button row
                 ],
               ),
             )
@@ -190,10 +242,11 @@ class ReviewFormBodyState extends State<AddReviewPage> {
     ));
   }
 
-  void addReviewFirebase(
-      String review, double rating, String movieId, String uid) {
+  //this method is used to add the entered review to the system database
+  void addReviewFirebase(String review, double rating, String movieId,
+      String uid, String movieTitle) {
     Map<String, dynamic> data = Map();
-    data['review'] = review;
+    data['review'] = "$movieTitle - $review";
     data['rating'] = rating;
     data['movieId'] = movieId;
     data['uid'] = uid;

@@ -5,7 +5,25 @@ import 'package:movie_corns/api/services/auth.dart';
 import 'package:movie_corns/constants/constants.dart';
 import 'package:movie_corns/pages/home.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:toast/toast.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+/*
+ * IT17050272 - D. Manoj Kumar
+ * 
+ *  This source code in login.dart file is used to create the user interface 
+ * as well as the backend tasks of the Login page of the app. In order to
+ * signin to the app user needs to provide the email address as the username
+ * & the password which he/she mentioed while registering the app 
+ * (mentioned in register.dart). Once the user enters the username & password the
+ * system will compare those credentials with database. If creadentials matched,
+ * user will be redirected to the next page, movie page with relavant user id.
+ * If creadentials not matched then, the system will display relavant error
+ * message. Also, user needs to provide both username & password before clicks on
+ * 'LOGIN' button, if not the system will provide relavant error messages telling that
+ * fields are empty. Apart from these, the user can redirected to register.dart file
+ * if user doesn't signup before.
+ *  These are the tasks which are fulfilled by this dart file. 
+ */
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -21,6 +39,17 @@ class _LoginPageState extends State<LoginPage> {
   ProgressDialog pr;
   Auth auth;
 
+  Function toast(
+      String msg, Toast toast, ToastGravity toastGravity, Color colors) {
+    Fluttertoast.showToast(
+        msg: msg,
+        toastLength: toast,
+        gravity: toastGravity,
+        backgroundColor: colors,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
+
   @override
   initState() {
     emailInputController = new TextEditingController();
@@ -28,6 +57,9 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
+  //Start email & password validation
+  //Start email validation
+  //check whether all the necessary points in email are included in user entered email/username
   String emailValidator(String value) {
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -38,14 +70,19 @@ class _LoginPageState extends State<LoginPage> {
       return null;
     }
   }
+  //End email validation
 
+  //Start Password validation
   String pwdValidator(String value) {
+    //check whether the number of characters in tha password less than 8
     if (value.length < 8) {
       return ValidatorConstants.WEAK_PASSWORD;
     } else {
       return null;
     }
   }
+  //End password validation
+  //End email & password validation
 
   @override
   Widget build(BuildContext context) {
@@ -79,14 +116,16 @@ class _LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   TextFormField(
                     decoration: InputDecoration(
-                        labelText: LabelConstants.LABEL_EMAIL, hintText: HintTextConstants.HINT_EMAIL),
+                        labelText: LabelConstants.LABEL_EMAIL,
+                        hintText: HintTextConstants.HINT_EMAIL),
                     controller: emailInputController,
                     keyboardType: TextInputType.emailAddress,
                     validator: emailValidator,
                   ),
                   TextFormField(
                     decoration: InputDecoration(
-                        labelText: LabelConstants.LABEL_PASSWORD, hintText: HintTextConstants.HINT_PASSWORD),
+                        labelText: LabelConstants.LABEL_PASSWORD,
+                        hintText: HintTextConstants.HINT_PASSWORD),
                     controller: pwdInputController,
                     obscureText: true,
                     validator: pwdValidator,
@@ -98,8 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(19)),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment
-                          .center, 
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(ButtonConstants.LOGIN_BUTTON),
                         Icon(Icons.arrow_forward),
@@ -124,13 +162,16 @@ class _LoginPageState extends State<LoginPage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) => HomePage(
-                                                    title: TitleConstants.ALL_MOVIES,
+                                                    title: TitleConstants
+                                                        .ALL_MOVIES,
                                                     uid: currentUser.user.uid,
                                                   )));
                                     }).whenComplete(() {
-                                      Toast.show(ToastConstants.WELCOME, context,
-                                          duration: Toast.LENGTH_LONG,
-                                          gravity: Toast.BOTTOM);
+                                      toast(
+                                          ToastConstants.WELCOME,
+                                          Toast.LENGTH_LONG,
+                                          ToastGravity.BOTTOM,
+                                          Colors.blueGrey);
                                     }))
                                 .catchError((err) => print(err)))
                             .catchError((err) {
@@ -162,13 +203,13 @@ class _LoginPageState extends State<LoginPage> {
   void showAuthError(errorCode, BuildContext context) {
     switch (errorCode) {
       case FirebaseAuthErrorConstants.ERROR_WRONG_PASSWORD:
-        Toast.show(ToastConstants.INCORRECT_PASSWORD, context,
-            duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
+        toast(ToastConstants.INCORRECT_PASSWORD, Toast.LENGTH_LONG,
+            ToastGravity.BOTTOM, Colors.blueGrey);
         break;
 
       default:
-        Toast.show(ToastConstants.UNKNOWN_AUTH_ERROR, context,
-            duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
+        toast(ToastConstants.UNKNOWN_AUTH_ERROR, Toast.LENGTH_LONG,
+            ToastGravity.BOTTOM, Colors.blueGrey);
         break;
     }
   }

@@ -11,6 +11,12 @@ import 'package:movie_corns/pages/add_review.dart';
 
 import 'pages/splash.dart';
 
+/*
+ * IT17050272 - D. Manoj Kumar
+ * 
+ * Includes all the routes which need to access the dart files
+ */
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -24,7 +30,8 @@ class MyApp extends StatelessWidget {
         ),
         home: SplashPage(),
         routes: <String, WidgetBuilder>{
-          '/home': (BuildContext context) => HomePage(title: TitleConstants.ALL_MOVIES),
+          '/home': (BuildContext context) =>
+              HomePage(title: TitleConstants.ALL_MOVIES),
           '/my': (BuildContext context) => MyReviewsPage(),
           '/profile': (BuildContext context) => ProfilePage(),
           '/movie': (BuildContext context) => MoviePage(),

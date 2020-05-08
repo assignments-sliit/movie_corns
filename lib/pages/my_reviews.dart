@@ -1,20 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:movie_corns/pages/view_review.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
-//import 'package:movie_corns/api/models/Movie.dart';
 import 'package:movie_corns/api/services/auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:movie_corns/constants/constants.dart';
+
+/*
+ * IT17143950 - G.M.A.S. Bastiansz
+ * 
+ * The tasks of my_review.dart file are providing relavant user interfaces as well as
+ * backend codes to view all the reviews provided by the logged user, update a selected review
+ * & delete reviews. According to the below source code the logged user can view all the reviews he/she 
+ * had provided to movies in a list view.  The list with seperate cards. Each card displays 
+ * seperate review. One card view consists with the name of the movie which user had reviewed,
+ * the review comment & also the rating. Also each card has "Edit" icon & "Delete" icon which
+ * can be used to fulfill update & delete tasks respectively. 
+ * According to the below code when the user clicks on Edit Icon, he'she will be able to update the 
+ * review which already provided. In order to firestore query, the user can only update the comment he/she 
+ * provided before. Once the "edit" icon clicks, the system will prompt a dialog box with the old comment. 
+ * If user wishes to edit it, he/she can give the new comment & clicks on "Update" button. The app will
+ * automatically redirect to the My Reviews page while replacing the new comment instead of old comment.
+ * When the user clicks on "Delete" icon, the system will prompt an alert message to comfirm the delete task.
+ * After user approves it, the system will erase the review from the whole database while refreshing to the 
+ * My Reviews page without the deleted review
+ * These are the overall tasks fulfill through this dart file      
+ */
 
 class MyReviewsPage extends StatefulWidget {
   final String title;
   final dynamic uid;
-  final movieId; //include this
+  final movieId;
   final reviewId;
 
   MyReviewsPage({Key key, this.title, this.uid, this.movieId, this.reviewId})
       : super(key: key);
-
-  //final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   @override
   _MyReviewsPageState createState() => _MyReviewsPageState();
@@ -22,6 +41,17 @@ class MyReviewsPage extends StatefulWidget {
 
 class _MyReviewsPageState extends State<MyReviewsPage> {
   final Auth auth = new Auth();
+
+  Function toast(
+      String msg, Toast toast, ToastGravity toastGravity, Color colors) {
+    Fluttertoast.showToast(
+        msg: msg,
+        toastLength: toast,
+        gravity: toastGravity,
+        backgroundColor: colors,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
 
   static final fullStar = Icon(
     Icons.star,
@@ -43,9 +73,9 @@ class _MyReviewsPageState extends State<MyReviewsPage> {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[fullStar, fullStar, fullStar, halfStar, starBorder],
   );
-String uid = "";
+  String uid = "";
 
- @override
+  @override
   void initState() {
     super.initState();
     auth.getCurrentUser().then((user) {
@@ -56,12 +86,12 @@ String uid = "";
       });
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("My Reviews"),
+          title: Text(TitleConstants.MY_REVIEWS),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.exit_to_app),
@@ -70,20 +100,20 @@ String uid = "";
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text("Sign Out"),
-                        content: Text("Are you sure want to sign out?"),
+                        title: Text(TitleConstants.ALERT_SIGN_OUT),
+                        content:
+                            Text(PromptConstants.QUESTION_CONFIRM_SIGN_OUT),
                         actions: [
                           FlatButton(
-                            child: Text("CANCEL"),
+                            child: Text(ButtonConstants.OPTION_CANCEL),
                             onPressed: () {
                               Navigator.pop(context);
                             },
                           ),
                           FlatButton(
-                            child: Text("YES"),
+                            child: Text(ButtonConstants.OPTION_YES),
                             onPressed: () {
                               auth.signOut();
-                              print('User signout Complete');
                               Navigator.pushNamedAndRemoveUntil(
                                   context, "/login", (_) => false);
                             },
@@ -100,15 +130,16 @@ String uid = "";
 
   Widget _buildReviewBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('reviews').where('uid',isEqualTo: uid).snapshots(),
+      stream: Firestore.instance
+          .collection('reviews')
+          .where('uid', isEqualTo: uid)
+          .snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData || snapshot.data.documents.length <1) {
-          return Text('You have no reviews!');
-        }else{
-        return _buildReviewList(context, snapshot.data.documents);
-
+        if (!snapshot.hasData || snapshot.data.documents.length < 1) {
+          return Text(TitleConstants.NO_REVIEWS);
+        } else {
+          return _buildReviewList(context, snapshot.data.documents);
         }
-
       },
     );
   }
@@ -132,10 +163,12 @@ String uid = "";
         ),
         Row(
           children: <Widget>[
-            SizedBox(height: 30.0,),
+            SizedBox(
+              height: 30.0,
+            ),
             Padding(
               padding: EdgeInsets.all(5.0),
-              child: Text('All your reviews'),
+              child: Text(TitleConstants.ALL_YOUR_REVIEWS),
             )
           ],
         ),
@@ -181,24 +214,152 @@ String uid = "";
                       borderColor: Colors.blue,
                       spacing: 0.0,
                     ),
-                    IconButton(
-                      icon: new Icon(Icons.edit),
-                      color: Colors.green,
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                        icon: new Icon(Icons.delete),
-                        color: Colors.red,
-                        onPressed: () {}),
                   ],
                 ),
                 subtitle: Padding(
                   padding: EdgeInsets.all(12.0),
-                  child: Text(record.review),
+                  child: Text("${record.review}"),
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    IconButton(
+                      icon: new Icon(Icons.edit),
+                      color: Colors.green,
+                      onPressed: () {
+                        _displayReviewUpdateDialog(context, record);
+                      },
+                    ),
+                    IconButton(
+                        icon: new Icon(Icons.delete),
+                        color: Colors.red,
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text(TitleConstants.ALERT_WARNING),
+                                  content: Text(PromptConstants
+                                      .QUESTION_CONFIRM_REVIEW_DELETE),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                      child:
+                                          Text(ButtonConstants.OPTION_CANCEL),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    FlatButton(
+                                      child:
+                                          Text(ButtonConstants.OPTION_DELETE),
+                                      onPressed: () {
+                                        final Firestore firestore =
+                                            Firestore.instance;
+
+                                        firestore
+                                            .collection('reviews')
+                                            .getDocuments()
+                                            .then((snap) {
+                                          for (DocumentSnapshot snapshot
+                                              in snap.documents) {
+                                            if (snapshot.documentID ==
+                                                record.reference.documentID) {
+                                              snapshot.reference.delete();
+                                            }
+                                          }
+                                        });
+
+                                        toast(
+                                            ToastConstants
+                                                .DELETE_REVIEW_SUCCESS,
+                                            Toast.LENGTH_LONG,
+                                            ToastGravity.BOTTOM,
+                                            Colors.blueGrey);
+
+                                        Navigator.of(context).pop();
+                                      },
+                                    )
+                                  ],
+                                );
+                              });
+                        })
+                  ],
                 ),
                 isThreeLine: true,
               ),
             ))));
+  }
+
+  _displayReviewUpdateDialog(BuildContext context, Record record) async {
+    TextEditingController commentController = new TextEditingController();
+
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(TitleConstants.UPDATE_MOVIE_REVIEW),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)),
+            content: Container(
+              height: 100,
+              child: Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    TextField(
+                      controller: commentController,
+                      decoration: InputDecoration(
+                          border: InputBorder.none, hintText: record.review),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(ButtonConstants.OPTION_CANCEL),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                  child: Text(ButtonConstants.OPTION_UPDATE),
+                  onPressed: () {
+                    String commentText = "";
+
+                    if (commentController.text.isEmpty) {
+                      commentText = record.review;
+                    } else {
+                      commentText = record.review.split("-")[0] +
+                          " - " +
+                          commentController.text;
+                    }
+
+                    print(widget.uid);
+
+                    Firestore.instance
+                        .collection('reviews')
+                        .document(record.reference.documentID)
+                        .setData({
+                      "review": commentText,
+                      "rating": record.rating,
+                      "movieId": record.movieId,
+                      "uid": uid
+                    });
+                    Navigator.of(context).pop();
+
+                    toast(
+                        ToastConstants.UPDATE_REVIEW_SUCCESS,
+                        Toast.LENGTH_LONG,
+                        ToastGravity.BOTTOM,
+                        Colors.blueGrey);
+
+                    return true;
+                  })
+            ],
+          );
+        });
   }
 
   double _calAvgReview(List<DocumentSnapshot> snapshot) {

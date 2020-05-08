@@ -4,11 +4,24 @@ import 'package:movie_corns/api/services/auth.dart';
 import 'package:movie_corns/constants/constants.dart';
 import 'package:movie_corns/pages/view_movieDetail.dart';
 
+/*
+ * IT17050272 - D. Manoj Kumar
+ * 
+ * The main task of this movie.dart file is, providing the sourde code code
+ * to create the user interface & backend tasks to view a collection of movies in a list
+ * By calling firestore get method, the app will fetch all the movies which are already
+ * stored in firebase database & view them to user in seperate card views
+ * while ordering them according to their release years.
+ * Each movie card is containg with the image of the movie, name of the movie,
+ * the release year as well as the average of rating. Once the user clicks on
+ * a movie card he/she will be abled to redirected to the Movie Details page
+ * for the selected movie according to the source code mention below. 
+ */
+
 class MoviePage extends StatefulWidget {
-  MoviePage({Key key, this.title, this.uid, this.movieId})
-      : super(key: key); 
+  MoviePage({Key key, this.title, this.uid, this.movieId}) : super(key: key);
   final String title;
-  final String uid; 
+  final String uid;
   final String movieId;
   final Auth auth = new Auth();
 
@@ -47,7 +60,8 @@ class _MoviePageState extends State<MoviePage> {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: Text(TitleConstants.ALERT_SIGN_OUT),
-                        content: Text(PromptConstants.QUESTION_CONFIRM_SIGN_OUT),
+                        content:
+                            Text(PromptConstants.QUESTION_CONFIRM_SIGN_OUT),
                         actions: [
                           FlatButton(
                             child: Text(ButtonConstants.OPTION_CANCEL),

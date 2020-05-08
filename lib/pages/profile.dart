@@ -4,6 +4,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:movie_corns/api/services/auth.dart';
 import 'package:movie_corns/constants/constants.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+/*
+ * IT17050272 - D. Manoj Kumar
+ * 
+ * profile.dart file consists with the source code which used to create User Profile
+ * interfaces & backend services.
+ * Once an user login to the app, the system will fetch the details of the logged user 
+ * using the uid/documentID which had created when user registered to the system for first 
+ * time. After user login to the app successfully he/she can redirect their user profile
+ * clicking on "My Profile" tab in bottom navigation
+ * User profile UI consists with logged user's firstname, surname & username & also there
+ * are 2 buttons namely "Update Profile" & "Delete Profile" to update or delete the profile.
+ * Once the user successfully login to the system, the system will fetch all the relavant 
+ * data from the database according to the uid & place them in the right place in the user 
+ * profile as per the below code. Hence, the image of the user is not a compulsory data,
+ * here used a default image from the internet to represent user.
+ * Once the user clicks on "Update Profile" button, the system will display a dialog
+ * box which contain with first name & surname of logged user. We are not allowed to update 
+ * username(email) & the password to this point (Hope to develop the task in future). If user 
+ * wished to update his/her firstname/surname or both of them, they can give new names & clicks 
+ * on the update button. Soonafter button clicked the system will redirect to the same user profile 
+ * page with updated first name & surname.
+ * Once the user clicks on "Delete Profile" button, the system will display an alert message to confirm
+ * the delete task. If user gives the permission by clicking on the "Yes" button,
+ * then all the user tasks including all the provided reviews under the deleted user ID &
+ * the user profile will be deleted from whole system
+ * 
+ * These are the overall tasks complete through this dart file
+ */
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key key, this.title, this.uid}) : super(key: key);
@@ -18,6 +48,20 @@ class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   final FocusNode myFocusNode = FocusNode();
   String userId = "";
+
+  //create a function for the toast
+  Function toast(
+      String msg, Toast toast, ToastGravity toastGravity, Color colors) {
+    Fluttertoast.showToast(
+        msg: msg,
+        toastLength: toast,
+        gravity: toastGravity,
+        timeInSecForIosWeb: 1,
+        backgroundColor: colors,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -208,6 +252,12 @@ class _ProfilePageState extends State<ProfilePage>
                           widget.auth.signOut();
                           Navigator.pushNamedAndRemoveUntil(
                               context, "/login", (_) => false);
+
+                          toast(
+                              ToastConstants.PROFILE_DELETED_SUCCESS,
+                              Toast.LENGTH_LONG,
+                              ToastGravity.BOTTOM,
+                              Colors.blueGrey);
                         },
                         child: Text(ButtonConstants.OPTION_DELETE),
                       ),
@@ -292,34 +342,35 @@ class _ProfilePageState extends State<ProfilePage>
               FlatButton(
                 onPressed: () {
                   //return false;
-                 
-                    String fname = "";
-                    String surname = "";
 
-                    if (fnameController.text.isEmpty)
-                      fname = snapshot["fname"];
-                    else
-                      fname = fnameController.text;
+                  String fname = "";
+                  String surname = "";
 
-                    if (surnameConroller.text.isEmpty)
-                      surname = snapshot["surname"];
-                    else
-                      surname = surnameConroller.text;
+                  if (fnameController.text.isEmpty)
+                    fname = snapshot["fname"];
+                  else
+                    fname = fnameController.text;
 
-                    print(widget.uid);
+                  if (surnameConroller.text.isEmpty)
+                    surname = snapshot["surname"];
+                  else
+                    surname = surnameConroller.text;
 
-                    Firestore.instance
-                        .collection('users')
-                        .document(userId)
-                        .setData({
-                      "fname": fname,
-                      "surname": surname,
-                      "email": snapshot["email"],
-                      "uid": userId
-                    });
-                    Navigator.of(context).pop();
-                    return true;
-                
+                  print(widget.uid);
+
+                  Firestore.instance
+                      .collection('users')
+                      .document(userId)
+                      .setData({
+                    "fname": fname,
+                    "surname": surname,
+                    "email": snapshot["email"],
+                    "uid": userId
+                  });
+                  Navigator.of(context).pop();
+                  toast(ToastConstants.PROFILE_UPDATE_SUCCESS,
+                      Toast.LENGTH_LONG, ToastGravity.BOTTOM, Colors.blueGrey);
+                  return true;
                 },
                 child: Text(ButtonConstants.OPTION_UPDATE),
               ),

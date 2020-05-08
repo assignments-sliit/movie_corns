@@ -8,11 +8,27 @@ import 'package:movie_corns/constants/constants.dart';
 import 'package:movie_corns/pages/add_review.dart';
 import 'package:movie_corns/pages/home.dart';
 
+/*
+ * IT17050272 - D. Manoj Kumar | IT17143950 - G.M.A.S. Bastiansz
+ * 
+ * view_movieDetails.dart file consists with the source code which need to display a sigle 
+ * movie detail page with backend servives. 
+ * Once the user selects a movie from the given movie-list in Movie Page, he/she will 
+ * redirect to this page. According to the below code, the system will get the movie ID when 
+ * user clicks on a movie from previous page & fetch all the data stored for that movie & retrieve
+ * those data to "Movie Datails" page. In this page, the system will display the movie image,
+ * movie name, movie cast, & small description about the movie relavant to the selected movie ID.
+ * At the bottom of the page there is a button called "Add Review" which will redirect to "Add Movie Review"
+ * page with the movie ID, movie title & logged user ID
+ */
+
 class ViewMovieDetailPage extends StatelessWidget {
   final movieId;
   final uid;
+  final movieTitle;
 
-  ViewMovieDetailPage({Key key, this.movieId, this.uid}) : super(key: key);
+  ViewMovieDetailPage({Key key, this.movieId, this.uid, this.movieTitle})
+      : super(key: key);
 
   final Auth auth = new Auth();
   @override
@@ -180,6 +196,7 @@ class ViewMovieDetailPage extends StatelessWidget {
             builder: (context) => AddReviewPage(
                   uid: uid,
                   movieId: snapshot.documentID,
+                  movieTitle: snapshot["movieTitle"],
                 )));
         //Amashi end
       },
@@ -204,8 +221,7 @@ class ViewMovieDetailPage extends StatelessWidget {
   }
 
   String getMovieUrl(String snapUrl) {
-    if (snapUrl.isEmpty)
-      return NetworkImagesPath.MOVIE_AVATAR;
+    if (snapUrl.isEmpty) return NetworkImagesPath.MOVIE_AVATAR;
 
     return snapUrl;
   }

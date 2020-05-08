@@ -1,5 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+/*
+ * IT17143950 - G.M.A.S. Bastiansz
+ * 
+ * This Review.dart file is used to show the models in the "reviews" databse
+ */
+
 class Review {
   String movieId;
   String reviewId;

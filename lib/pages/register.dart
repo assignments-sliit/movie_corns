@@ -5,6 +5,28 @@ import 'package:movie_corns/constants/constants.dart';
 import 'package:movie_corns/pages/home.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
+/*
+ * IT17050272 - D. Manoj Kumar
+ * 
+ * register.dart file consists with the source code for registeration page user interface
+ * & backend services based on user registration
+ * Once the user clicks on "Join Movie Corns" button in login page he/she will redirect to
+ * this page. In order to register to the system, user needs to provide firstname, surname,
+ * username & password as described in below code. An email address used by the user should be 
+ * as the username as it will be useful for the future development of the app. The user 
+ * needs to provide a password at least 8 character long in order to prevent from umauthorized 
+ * logins. Also the password has to mention twice to ensure the password entered.
+ * After entering all the required information, user can clicks on "Join Movie Corns" button.
+ * Soonafter user clicks on it, the user entered data will stored in "users" database in firebase
+ * under a newly auto-created user ID/document ID. This user ID will be used under every tasks. 
+ * Once the user successfully registered to the system, the user will be redirected to the home 
+ * page (Movie page) of the app
+ * As mentioed in below code, the registration page is consisting with validators. It is required 
+ * to fill all the details mentioned in the form brfore clicks on "Join Movie Corns" button & if
+ * user fails to fil one field the system will display an error message. Apart from that, there are
+ * validators to check the length of the password as well as the type of the username is "Email" too. 
+ */
+
 class RegisterPage extends StatefulWidget {
   RegisterPage({Key key}) : super(key: key);
 
@@ -183,7 +205,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: Text(TitleConstants.ALERT_ERROR),
-                                  content: Text(ValidatorConstants.PASSWORDS_DO_NOT_MATCH),
+                                  content: Text(ValidatorConstants
+                                      .PASSWORDS_DO_NOT_MATCH),
                                   actions: <Widget>[
                                     FlatButton(
                                       child: Text(ButtonConstants.OPTION_CLOSE),

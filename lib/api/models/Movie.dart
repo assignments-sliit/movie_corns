@@ -1,3 +1,10 @@
+/*
+ * IT17050272 - D. Manoj Kumar
+ * 
+ * This movieAPI.dart file is consisting with services which used to fetch movie details from
+ * forebase
+ */
+
 class Movie {
   String movieId;
   String movieTitle;

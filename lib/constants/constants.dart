@@ -1,9 +1,22 @@
+/*
+ * IT17050272 - D. Manoj Kumar | IT17143950 - G.M.A.S. Bastiansz
+ * 
+ * This constants.dart file is consisting with all the constant names which are used in overall app
+ * such as button names, title names, validators names, progress dialog messages, label names, hint texts,
+ * toasts, error messages, prompt messages & image paths. It is easy to mention all constants in one dart file
+ * because we happen to use same constants in multiple pages. Therefore, by maintaining this dart file it is
+ * easy to mention those constants & it will make the source code more clear
+ */
+
 class ButtonConstants {
   static const String LOGIN_BUTTON = "START REVIEWING";
   static const String JOIN_BUTTON = "JOIN MOVIE CORNS";
   static const String EDIT_PROFILE = "EDIT PROFILE";
   static const String DELETE_PROFILE = "DELETE PROFILE";
   static const String LOGIN = "LOGIN";
+
+  static const String ADD_REVIEW = "SUBMIT REVIEW";
+  static const String CANCEL_REVIEW = "CANCEL REVIEW";
 
   static const String OPTION_CANCEL = "CANCEL";
   static const String OPTION_YES = "YES";
@@ -18,6 +31,11 @@ class TitleConstants {
   static const String PROFILE = "Profile";
   static const String LOGIN = "Login to Movie Corns";
   static const String REGISTER = "Register";
+
+  static const String ADD_MOVIE_REVIEW = "Add movie Review";
+  static const String NO_REVIEWS = "You have no Reviews!";
+  static const String ALL_YOUR_REVIEWS = "All Your Reviews";
+  static const String UPDATE_MOVIE_REVIEW = "Update Movie Review";
 
   static const String ALERT_SIGN_OUT = "Sign Out";
   static const String ALERT_WARNING = "Warning!";
@@ -34,11 +52,13 @@ class ValidatorConstants {
   static const String INVALID_LAST_NAME = "Please enter a valid last name.";
 
   static const String PASSWORDS_DO_NOT_MATCH = "The passwords do not match";
+
+  static const String COMMENT_CANNOT_NULL = "Comment field cannot be empty";
 }
 
 class ProgressDialogMesssageConstants {
-  static const String LOGGING_IN = "Logging in...";
-  static const String WELCOME_ABOARD = "Welcome Aboard...!";
+  static const String LOGGING_IN = "Logging in";
+  static const String WELCOME_ABOARD = "Welcome Aboard!";
 }
 
 class LabelConstants {
@@ -50,19 +70,35 @@ class LabelConstants {
 
   static const String LABEL_NEW_HERE = "New Here?";
   static const String LABEL_ALREADY_HAVE_ACCOUNT = "Already have an account?";
+
+  static const String LABEL_COMMENT_FIELD = 'Comment';
+  static const String LABEL_RATING_FIELD = 'Rate Us';
 }
 
 class HintTextConstants {
-  static const String HINT_EMAIL = "jothipala@gmail.com";
+  static const String HINT_EMAIL = "john.doe@gmail.com";
   static const String HINT_PASSWORD = "*************";
-  static const String HINT_FIRST_NAME = "Mahinda";
-  static const String HINT_LAST_NAME = "Rajapakse";
+  static const String HINT_FIRST_NAME = "John";
+  static const String HINT_LAST_NAME = "Doe";
+
+  static const String HINT_COMMENT_FIELD = "We like to hear from you!";
 }
 
 class ToastConstants {
   static const String WELCOME = "Welcome!";
   static const String INCORRECT_PASSWORD = "Incorrect Password!";
   static const String UNKNOWN_AUTH_ERROR = "Unknown Authentication Error";
+
+  static const String ADD_REVIEW_SUCCESS = "Movie Review Added Successfully";
+  static const String DELETE_REVIEW_SUCCESS =
+      "Movie Review Deleted Successfully";
+  static const String UPDATE_REVIEW_SUCCESS =
+      "Movie Review Updated Successfully";
+
+  static const String PROFILE_DELETED_SUCCESS =
+      "User Profile Deleted Successfully";
+  static const String PROFILE_UPDATE_SUCCESS =
+      "User Profile Updated Successfully";
 }
 
 class FirebaseAuthErrorConstants {
@@ -75,6 +111,9 @@ class PromptConstants {
 
   static const String QUESTION_CONFIRM_ACCOUNT_DELETE =
       "Deleting an account will delete everything! Continue?";
+
+  static const String QUESTION_CONFIRM_REVIEW_DELETE =
+      "Do you really want to delete the review?";
 }
 
 class NetworkImagesPath {

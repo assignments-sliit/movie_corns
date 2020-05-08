@@ -3,6 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'package:movie_corns/api/models/Movie.dart';
 import 'package:movie_corns/locator.dart';
 
+/*
+ * IT17050272 - D. Manoj Kumar
+ * 
+ * This movieAPI.dart file is consisting with services which used to fetch movie details from
+ * forebase
+ */
+
 class MovieApi {
   final Firestore firestore = Firestore.instance;
   final String path;
@@ -31,18 +38,18 @@ class MovieService extends ChangeNotifier {
 
   Future<List<Movie>> fetchMovies() async {
     var result = await movieApi.getMovies();
-    movies = result.documents.map((doc) => Movie.fromMap(doc.data,doc.documentID)).toList();
+    movies = result.documents
+        .map((doc) => Movie.fromMap(doc.data, doc.documentID))
+        .toList();
     return movies;
-
   }
 
-  Stream<QuerySnapshot> fetchMoviesAsStream(){
+  Stream<QuerySnapshot> fetchMoviesAsStream() {
     return movieApi.streamMovies();
   }
 
-  Future<Movie> getMovieById(String movieId)async{
+  Future<Movie> getMovieById(String movieId) async {
     var doc = await movieApi.getMovieByMovieId(movieId);
-    return Movie.fromMap(doc.data,doc.documentID);
+    return Movie.fromMap(doc.data, doc.documentID);
   }
-
 }
