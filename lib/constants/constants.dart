@@ -69,7 +69,7 @@ class LabelConstants {
   static const String LABEL_CONFIRM_PASSWORD = "Confirm Password*";
 
   static const String LABEL_NEW_HERE = "New Here?";
-  static const String LABEL_ALREADY_HAVE_ACCOUNT = "Already have an account?";
+  static const String LABEL_ALREADY_HAVE_ACCOUNT = "Do you already have an account?";
 
   static const String LABEL_COMMENT_FIELD = 'Comment';
   static const String LABEL_RATING_FIELD = 'Rate Us';
@@ -77,7 +77,7 @@ class LabelConstants {
 
 class HintTextConstants {
   static const String HINT_EMAIL = "john.doe@gmail.com";
-  static const String HINT_PASSWORD = "*************";
+  static const String HINT_PASSWORD = "*****************";
   static const String HINT_FIRST_NAME = "John";
   static const String HINT_LAST_NAME = "Doe";
 
