@@ -1,4 +1,4 @@
-# Movie Corns
+# Movie Corns Application
 
 A new Flutter project.
 
